@@ -10,6 +10,7 @@ A modern, responsive multi-step form application for Empower Treatment patient i
 - **Google Calendar integration** for appointment scheduling
 - **Database storage** with Supabase (with local file storage fallback)
 - **Email notifications** for both patients and admin team
+- **SMS appointment reminders** for patients and clinicians
 - **Admin panel** to view and export submissions
 
 ### 🎨 User Experience

@@ -525,6 +525,33 @@ export async function POST(request: NextRequest) {
     
     await sgMail.send(msg);
 
+    // Send SMS notifications if appointment is scheduled
+    if (data.appointmentDateTime && data.mobileNumber) {
+      try {
+        const smsResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/send-appointment-reminder`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            patientName: `${data.fname} ${data.lname}`,
+            patientPhone: data.mobileNumber,
+            appointmentDateTime: data.appointmentDateTime,
+            isInitialNotification: true
+          }),
+        });
+
+        if (!smsResponse.ok) {
+          console.error('Failed to send appointment SMS notifications');
+        } else {
+          console.log('Appointment SMS notifications sent successfully');
+        }
+      } catch (smsError) {
+        console.error('Error sending SMS notifications:', smsError);
+        // Don't fail the entire submission if SMS fails
+      }
+    }
+
     // Send confirmation email to patient if they provided an email
     if (data.email) {
       const patientMsg = {
