@@ -518,6 +518,11 @@ export async function POST(request: NextRequest) {
       html: htmlContent,
     };
 
+    // Log HTML for testing (remove this in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email HTML Preview:', htmlContent);
+    }
+    
     await sgMail.send(msg);
 
     // Send confirmation email to patient if they provided an email
