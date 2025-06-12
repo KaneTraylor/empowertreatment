@@ -17,10 +17,6 @@ export function Header() {
             />
           </Link>
           <nav className="hidden md:flex items-center space-x-4 text-sm">
-            <Link href="/progress" className="text-gray-700 hover:text-primary font-medium">
-              Progress Reports
-            </Link>
-            <span className="text-gray-400">|</span>
             <Link href="#" className="text-gray-700 hover:text-primary">
               Need help?
             </Link>
