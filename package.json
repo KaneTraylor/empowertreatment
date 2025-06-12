@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.1.1",
     "@sendgrid/mail": "^8.1.5",
     "@supabase/supabase-js": "^2.50.0",
