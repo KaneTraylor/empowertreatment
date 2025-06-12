@@ -7,6 +7,7 @@ import { generateProgressReportPDF } from '@/lib/generatePDF';
 
 interface ProgressReportForm {
   providerName: string;
+  providerCredentials: string;
   patientName: string;
   patientGoals: string;
   workingOn: string;
@@ -18,6 +19,7 @@ interface ProgressReportForm {
 export default function ProgressPage() {
   const [formData, setFormData] = useState<ProgressReportForm>({
     providerName: '',
+    providerCredentials: '',
     patientName: '',
     patientGoals: '',
     workingOn: '',
@@ -148,6 +150,24 @@ export default function ProgressPage() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   placeholder="Dr. Jane Smith"
                 />
+              </div>
+
+              {/* Provider Credentials */}
+              <div>
+                <label htmlFor="providerCredentials" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Provider Credentials
+                </label>
+                <input
+                  type="text"
+                  id="providerCredentials"
+                  name="providerCredentials"
+                  value={formData.providerCredentials}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="MD, FASAM / LCSW, LCDC / NP, PMHNP-BC"
+                />
+                <p className="text-xs text-gray-500 mt-1">Enter your professional credentials (e.g., MD, PhD, LCSW, etc.)</p>
               </div>
 
               {/* Patient Name */}

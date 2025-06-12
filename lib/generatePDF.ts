@@ -3,6 +3,7 @@ import { logoBase64 } from './logoData';
 
 interface ProgressReportData {
   providerName: string;
+  providerCredentials: string;
   patientName: string;
   patientGoals: string;
   workingOn: string;
@@ -101,7 +102,9 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   doc.setFont('helvetica', 'bold');
   doc.text('Provider:', pageWidth / 2 + 5, yPosition + 5);
   doc.setFont('helvetica', 'normal');
-  doc.text(data.providerName, pageWidth / 2 + 25, yPosition + 5);
+  const providerText = data.providerCredentials ? `${data.providerName}, ${data.providerCredentials}` : data.providerName;
+  const providerLines = doc.splitTextToSize(providerText, 70);
+  doc.text(providerLines[0], pageWidth / 2 + 25, yPosition + 5);
   
   yPosition += lineHeight + 2;
   
@@ -122,6 +125,11 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   const reportSections = data.reportContent.split('\n\n');
   
   reportSections.forEach((section) => {
+    // Skip the provider contact section at the end (we handle it in footer)
+    if (section.includes('Provider Contact Information:')) {
+      return;
+    }
+    
     // Check if this is a header (usually in caps or starts with specific keywords)
     const isHeader = section.match(/^[A-Z\s]+:/) || 
                     section.includes('SUMMARY') || 
@@ -129,14 +137,21 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
                     section.includes('SERVICES') ||
                     section.includes('OBSERVATIONS') ||
                     section.includes('RECOMMENDATIONS') ||
-                    section.includes('NEXT STEPS');
+                    section.includes('NEXT STEPS') ||
+                    section.includes('PROGRESS') ||
+                    section.includes('TREATMENT');
+    
+    // Check if this is a signature line
+    const isSignature = section.includes('Prepared by:') || 
+                       section.includes('Submitted by:') ||
+                       section.includes('Signed:');
     
     if (isHeader) {
       // Add extra space before headers
       yPosition += lineHeight;
       
       // Check if we need a new page
-      if (yPosition + lineHeight * 3 > pageHeight - margin) {
+      if (yPosition + lineHeight * 3 > pageHeight - margin * 3) {
         doc.addPage();
         yPosition = margin;
         addHeader();
@@ -161,11 +176,19 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
       const content = section.split('\n').slice(1).join('\n');
       if (content.trim()) {
         doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
         addWrappedText(content.trim());
       }
+    } else if (isSignature) {
+      // Special formatting for signature section
+      yPosition += lineHeight * 2;
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(10);
+      addWrappedText(section);
     } else {
       // Regular content
       doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
       addWrappedText(section);
     }
     
@@ -199,7 +222,8 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(data.providerName, margin, yPosition);
+  const footerProviderText = data.providerCredentials ? `${data.providerName}, ${data.providerCredentials}` : data.providerName;
+  doc.text(footerProviderText, margin, yPosition);
   yPosition += lineHeight - 1;
   doc.text(`${data.contactEmail} | ${data.contactPhone}`, margin, yPosition);
   

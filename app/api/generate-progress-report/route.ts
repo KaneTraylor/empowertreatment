@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     }
     const {
       providerName,
+      providerCredentials,
       patientName,
       patientGoals,
       workingOn,
@@ -55,6 +56,7 @@ export async function POST(request: NextRequest) {
     You are a professional healthcare documentation assistant. Generate a comprehensive progress report for a patient in substance abuse treatment based on the following information:
 
     Provider Name: ${providerName}
+    Provider Credentials: ${providerCredentials || 'Not specified'}
     Patient Name: ${patientName}
     Treatment Goals: ${patientGoals}
     Services/Activities Worked On: ${workingOn}
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
 
 ---
 Provider Contact Information:
-${providerName}
+${providerName}${providerCredentials ? `, ${providerCredentials}` : ''}
 Email: ${contactEmail}
 Phone: ${contactPhone}
 
