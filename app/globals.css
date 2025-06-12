@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* Calendar Custom Styles */
+.react-calendar-custom {
+  width: 100%;
+  max-width: 350px;
+  background: white;
+  font-family: inherit;
+}
+
+.react-calendar-custom button {
+  margin: 0;
+  border: 0;
+  outline: none;
+  font: inherit;
+  @apply hover:bg-primary/10 transition-colors;
+}
+
+.react-calendar-custom button:enabled:hover {
+  cursor: pointer;
+}
+
+.react-calendar__tile--now {
+  @apply bg-primary/20;
+}
+
+.react-calendar__tile--active {
+  @apply bg-primary text-white;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-primary;
+}
+
+.react-calendar__tile:disabled {
+  @apply bg-gray-50 text-gray-300 cursor-not-allowed;
+}
+
+.react-calendar__navigation button {
+  @apply text-lg font-semibold;
+}
+
+/* Animation Classes */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
