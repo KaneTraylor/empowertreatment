@@ -65,9 +65,7 @@ export async function GET(request: NextRequest) {
     insuranceselect: 'Blue Cross Blue Shield',
     reasonJoiningEmpower: 'I want to get my life back on track and provide a better future for my family.',
     interestedintreatment: 'asap',
-    appointmentDateTime: 'Monday, January 15, 2025 at 2:00 PM EST',
-    currentStep: 0,
-    steps: []
+    appointmentDateTime: 'Monday, January 15, 2025 at 2:00 PM EST'
   };
 
   const submissionId = '12345678-90ab-cdef-1234-567890abcdef';

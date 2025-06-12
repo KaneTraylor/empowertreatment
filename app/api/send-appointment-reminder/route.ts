@@ -128,33 +128,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Function to schedule a reminder (to be called from other parts of the app)
-export async function scheduleAppointmentReminder(
-  patientName: string,
-  patientPhone: string | undefined,
-  appointmentDateTime: string,
-  reminderHoursBefore: number = 24
-) {
-  try {
-    const appointmentDate = parseAppointmentDateTime(appointmentDateTime);
-    const reminderDate = new Date(appointmentDate.getTime() - (reminderHoursBefore * 60 * 60 * 1000));
-    
-    // In a production environment, you would use a job scheduler like:
-    // - Vercel Cron Jobs
-    // - AWS Lambda with CloudWatch Events
-    // - A dedicated job queue service
-    
-    // For now, we'll return the reminder date for logging
-    console.log(`Reminder scheduled for ${patientName} at ${reminderDate.toISOString()}`);
-    
-    return {
-      appointmentDate,
-      reminderDate,
-      patientName,
-      patientPhone
-    };
-  } catch (error) {
-    console.error('Error scheduling reminder:', error);
-    throw error;
-  }
-}
