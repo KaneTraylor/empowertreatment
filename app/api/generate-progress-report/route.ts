@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    // Check for API key first
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY is not configured');
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    // Initialize Gemini AI
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+    // Parse request body with error handling
+    let data;
+    try {
+      data = await request.json();
+    } catch (parseError) {
+      console.error('Error parsing request body:', parseError);
+      return NextResponse.json(
+        { success: false, message: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
     const {
       providerName,
       patientName,
@@ -25,8 +47,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Get the generative model (using the latest stable model)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Create the prompt for Gemini
     const prompt = `
@@ -57,10 +79,20 @@ export async function POST(request: NextRequest) {
     Format the report in a standard clinical documentation style.
     `;
 
-    // Generate the report
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const report = response.text();
+    // Generate the report with error handling
+    let report;
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      report = response.text();
+      
+      if (!report) {
+        throw new Error('Empty response from Gemini API');
+      }
+    } catch (geminiError) {
+      console.error('Gemini API error:', geminiError);
+      throw new Error(`Failed to generate content: ${geminiError instanceof Error ? geminiError.message : 'Unknown error'}`);
+    }
 
     // Add footer with contact information
     const fullReport = `${report}
@@ -81,23 +113,34 @@ Report Generated: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_
   } catch (error) {
     console.error('Error generating progress report:', error);
     
-    // Check if it's a Gemini API error
-    if (error instanceof Error && error.message.includes('API_KEY')) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.' 
-        },
-        { status: 500 }
-      );
+    // Determine specific error type and message
+    let errorMessage = 'Failed to generate progress report. Please try again.';
+    let statusCode = 500;
+    
+    if (error instanceof Error) {
+      // Check for specific error types
+      if (error.message.includes('API_KEY') || error.message.includes('API key')) {
+        errorMessage = 'Gemini API key is invalid or not configured properly.';
+      } else if (error.message.includes('model')) {
+        errorMessage = 'Invalid Gemini model specified. Please check the model name.';
+      } else if (error.message.includes('quota') || error.message.includes('limit')) {
+        errorMessage = 'API quota exceeded. Please try again later.';
+        statusCode = 429;
+      } else if (error.message.includes('network') || error.message.includes('fetch')) {
+        errorMessage = 'Network error connecting to Gemini API. Please check your internet connection.';
+        statusCode = 503;
+      } else {
+        // Include the actual error message for debugging
+        errorMessage = `Error: ${error.message}`;
+      }
     }
 
     return NextResponse.json(
       { 
         success: false, 
-        message: 'Failed to generate progress report. Please try again.' 
+        message: errorMessage 
       },
-      { status: 500 }
+      { status: statusCode }
     );
   }
 }
