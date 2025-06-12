@@ -224,26 +224,26 @@ export async function POST(request: NextRequest) {
               <table cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <!-- Header -->
                 <tr>
-                  <td style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 30px 40px; border-radius: 12px 12px 0 0;">
+                  <td style="background: linear-gradient(135deg, #ef3d3d 0%, #dc2626 100%); padding: 30px 40px; border-radius: 12px 12px 0 0;">
                     <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">New Patient Application</h1>
-                    <p style="margin: 8px 0 0 0; color: #e0e7ff; font-size: 16px;">Empower Treatment Assessment Form</p>
+                    <p style="margin: 8px 0 0 0; color: #fee2e2; font-size: 16px;">Pre-Assessment Information Review</p>
                   </td>
                 </tr>
                 
                 <!-- Quick Info Banner -->
                 <tr>
                   <td style="padding: 0;">
-                    <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #eff6ff; border-bottom: 1px solid #dbeafe;">
+                    <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #fee2e2; border-bottom: 1px solid #fecaca;">
                       <tr>
                         <td style="padding: 20px 40px;">
                           <table cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td width="50%">
-                                <p style="margin: 0; color: #1e40af; font-size: 14px; font-weight: 600;">PATIENT NAME</p>
+                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">PATIENT NAME</p>
                                 <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${data.fname || 'Not provided'} ${data.lname || 'Not provided'}</p>
                               </td>
                               <td width="50%" align="right">
-                                <p style="margin: 0; color: #1e40af; font-size: 14px; font-weight: 600;">SUBMISSION ID</p>
+                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">SUBMISSION ID</p>
                                 <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">#${submissionId ? submissionId.slice(-8) : 'PENDING'}</p>
                               </td>
                             </tr>
@@ -285,7 +285,7 @@ export async function POST(request: NextRequest) {
                 <tr>
                   <td style="padding: 30px 40px 0 40px;">
                     <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                      <span style="color: #2563eb;">📋</span> Contact Information
+                      <span style="color: #ef3d3d;">📋</span> Contact Information
                     </h2>
                     <table cellpadding="0" cellspacing="0" width="100%">
                       <tr>
@@ -326,7 +326,7 @@ export async function POST(request: NextRequest) {
                 <tr>
                   <td style="padding: 30px 40px 0 40px;">
                     <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                      <span style="color: #2563eb;">🏥</span> Clinical Assessment
+                      <span style="color: #ef3d3d;">🏥</span> Clinical Assessment
                     </h2>
                     
                     <!-- Opioid Use Status -->
@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
                 <tr>
                   <td style="padding: 30px 40px 0 40px;">
                     <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                      <span style="color: #2563eb;">📝</span> Additional Information
+                      <span style="color: #ef3d3d;">📝</span> Additional Information
                     </h2>
                     
                     <!-- Life Difficulties -->
@@ -459,11 +459,11 @@ export async function POST(request: NextRequest) {
                 <!-- Action Items -->
                 <tr>
                   <td style="padding: 30px 40px;">
-                    <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #eff6ff; border-radius: 8px; padding: 20px;">
+                    <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #fee2e2; border-radius: 8px; padding: 20px;">
                       <tr>
                         <td>
-                          <h3 style="margin: 0 0 12px 0; color: #1e40af; font-size: 16px; font-weight: 600;">
-                            <span style="color: #2563eb;">🎯</span> Next Steps
+                          <h3 style="margin: 0 0 12px 0; color: #991b1b; font-size: 16px; font-weight: 600;">
+                            <span style="color: #ef3d3d;">🎯</span> Next Steps
                           </h3>
                           ${data.appointmentDateTime ? `
                           <ul style="margin: 0; padding-left: 20px; color: #1f2937; font-size: 14px; line-height: 1.6;">
