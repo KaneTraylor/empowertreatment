@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling with custom easing for Webkit browsers */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrolling for mobile */
+  @media (max-width: 768px) {
+    html {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      /* Slow down scroll snap */
+      scroll-snap-type: none;
+    }
+    
+    body {
+      overscroll-behavior: none;
+      /* Smoother scrolling on iOS */
+      -webkit-font-smoothing: antialiased;
+      touch-action: pan-y;
+    }
+    
+    /* Disable scroll anchoring for smoother experience */
+    * {
+      overflow-anchor: none;
+    }
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 255, 255, 255;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 
 // Configure Line Seed Sans font
 const lineSeedSans = localFont({
@@ -46,7 +47,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lineSeedSans.variable} ${lineSeedSans.className}`}>{children}</body>
+      <body className={`${lineSeedSans.variable} ${lineSeedSans.className}`}>
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
+      </body>
     </html>
   );
 }
