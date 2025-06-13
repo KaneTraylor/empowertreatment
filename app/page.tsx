@@ -226,7 +226,7 @@ export default function Home() {
                 
                 {/* CTA Button */}
                 <Link
-                  href="/welcome"
+                  href="/adult-services"
                   className="inline-flex items-center justify-center bg-[#005c65] text-white rounded-full px-8 py-3 text-base font-light hover:bg-[#004a52] transition-colors w-full md:w-auto"
                 >
                   Learn about adult services →
@@ -1176,7 +1176,7 @@ export default function Home() {
               <div>
                 <h4 className="text-lg font-semibold mb-4">Services</h4>
                 <ul className="space-y-3">
-                  <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Individual Therapy</a></li>
+                  <li><a href="/adult-services" className="text-gray-400 hover:text-white transition-colors">Adult Services</a></li>
                   <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Group Counseling</a></li>
                   <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Teen & Family Services</a></li>
                   <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Telehealth</a></li>
