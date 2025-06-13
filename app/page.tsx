@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { HeroTextAnimation } from '@/components/HeroTextAnimation';
 import { ScrollFillText } from '@/components/ScrollFillText';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
@@ -13,6 +14,9 @@ export default function Home() {
   const [step1Progress, setStep1Progress] = useState(0);
   const [step2Progress, setStep2Progress] = useState(0);
   const [step3Progress, setStep3Progress] = useState(0);
+  
+  const { scrollY: scrollYMotion } = useScroll();
+  const heroParallax = useTransform(scrollYMotion, [0, 500], [0, 150]);
   
   useEffect(() => {
     // Set initial window width
@@ -69,6 +73,33 @@ export default function Home() {
   const horizontalPadding = scrollProgress * (isMobile ? 12 : 60); // 12px on mobile, 60px on desktop
   const borderRadius = scrollProgress * (isMobile ? 10 : 20); // Smaller radius on mobile too
 
+  // Animation variants
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const fadeInLeft = {
+    initial: { opacity: 0, x: -60 },
+    animate: { opacity: 1, x: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const fadeInRight = {
+    initial: { opacity: 0, x: 60 },
+    animate: { opacity: 1, x: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -89,17 +120,20 @@ export default function Home() {
             }}
           >
           {/* Background Video */}
-          <div className="absolute inset-0 z-0">
+          <motion.div 
+            className="absolute inset-0 z-0"
+            style={{ y: heroParallax }}
+          >
             <video
               autoPlay
               muted
               loop
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-[110%] object-cover"
             >
               <source src="/lander/hero.mp4" type="video/mp4" />
             </video>
-          </div>
+          </motion.div>
           {/* Content Container */}
           <div className="relative z-10 w-full px-5 md:px-8 lg:px-12 max-w-[93.75rem] mx-auto">
             <div className="flex flex-col lg:flex-row items-start">
@@ -153,9 +187,19 @@ export default function Home() {
             <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
           </svg>
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8">
+            <motion.div 
+              className="grid md:grid-cols-2 gap-8"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
               {/* Adults Card */}
-              <div className="bg-white rounded-[2rem] p-8 md:p-10 min-h-[32rem] md:min-h-[38rem] flex flex-col justify-between">
+              <motion.div 
+                className="bg-white rounded-[2rem] p-8 md:p-10 min-h-[32rem] md:min-h-[38rem] flex flex-col justify-between"
+                variants={fadeInUp}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              >
                 <div className="flex flex-col gap-8">
                   {/* Pill Badge */}
                   <div className="inline-flex items-center gap-2 bg-[#faf8f5] rounded-full px-6 py-3 self-start">
@@ -187,10 +231,14 @@ export default function Home() {
                 >
                   Learn about adult services →
                 </Link>
-              </div>
+              </motion.div>
 
               {/* Youth Card */}
-              <div className="bg-white rounded-[2rem] p-8 md:p-10 min-h-[32rem] md:min-h-[38rem] flex flex-col justify-between">
+              <motion.div 
+                className="bg-white rounded-[2rem] p-8 md:p-10 min-h-[32rem] md:min-h-[38rem] flex flex-col justify-between"
+                variants={fadeInUp}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              >
                 <div className="flex flex-col gap-8">
                   {/* Pill Badge */}
                   <div className="inline-flex items-center gap-2 bg-[#faf8f5] rounded-full px-6 py-3 self-start">
@@ -222,8 +270,8 @@ export default function Home() {
                 >
                   Explore youth programs →
                 </Link>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
@@ -239,55 +287,79 @@ export default function Home() {
             </p>
             
             {/* Insurance Logos Grid */}
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 max-w-5xl mx-auto">
+            <motion.div 
+              className="flex flex-wrap justify-center items-center gap-4 md:gap-6 max-w-5xl mx-auto"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+            >
               {/* Medicaid */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white">Medicaid</span>
-              </a>
+              </motion.a>
               
               {/* Aetna */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white">Aetna</span>
-              </a>
+              </motion.a>
               
               {/* United Healthcare */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white text-center text-sm">United Healthcare</span>
-              </a>
+              </motion.a>
               
               {/* Anthem */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white">Anthem</span>
-              </a>
+              </motion.a>
               
               {/* Medicare */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white">Medicare</span>
-              </a>
+              </motion.a>
               
               {/* And more... */}
-              <a 
+              <motion.a 
                 href="/welcome" 
                 className="group flex items-center justify-center bg-white border-2 border-[#ef3d3d] hover:bg-[#ef3d3d] hover:text-white rounded-lg p-6 w-40 h-20 transition-all duration-200"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="font-medium text-gray-900 group-hover:text-white">And more...</span>
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
             
             {/* Bottom CTA */}
             <div className="mt-12">
@@ -563,19 +635,37 @@ export default function Home() {
         <section className="py-16 md:py-24 overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12">
             {/* Section Header */}
-            <div className="text-center mb-16">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Your recovery, your way
               </h2>
               <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                 Choose the support format that works best for you
               </p>
-            </div>
+            </motion.div>
             
             {/* Service 1: Individual Counseling */}
-            <div className="flex flex-col lg:flex-row items-center gap-12 mb-24">
+            <motion.div 
+              className="flex flex-col lg:flex-row items-center gap-12 mb-24"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+            >
               {/* Text Content - Left */}
-              <div className="flex-1 lg:pr-12">
+              <motion.div 
+                className="flex-1 lg:pr-12"
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
                 <div className="inline-flex items-center gap-2 bg-[#005c65]/10 text-[#005c65] rounded-full px-4 py-2 mb-6">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -614,10 +704,16 @@ export default function Home() {
                 >
                   Schedule a session →
                 </Link>
-              </div>
+              </motion.div>
               
               {/* Image - Right */}
-              <div className="flex-1 relative">
+              <motion.div 
+                className="flex-1 relative"
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
                 <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
                   <video
                     autoPlay
@@ -629,11 +725,17 @@ export default function Home() {
                     <source src="/lander/individual.mp4" type="video/mp4" />
                   </video>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
             
             {/* Service 2: Group Counseling */}
-            <div className="flex flex-col lg:flex-row-reverse items-center gap-12 mb-24">
+            <motion.div 
+              className="flex flex-col lg:flex-row-reverse items-center gap-12 mb-24"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+            >
               {/* Text Content - Right (appears left on desktop due to flex-row-reverse) */}
               <div className="flex-1 lg:pl-12">
                 <div className="inline-flex items-center gap-2 bg-[#ef3d3d]/10 text-[#ef3d3d] rounded-full px-4 py-2 mb-6">
@@ -690,7 +792,7 @@ export default function Home() {
                   </video>
                 </div>
               </div>
-            </div>
+            </motion.div>
             
             {/* Service 3: Telehealth */}
             <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -813,7 +915,24 @@ export default function Home() {
                 </div>
                 
                 {/* Floating Mental Health Badge */}
-                <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-xl max-w-[200px] md:max-w-xs">
+                <motion.div 
+                  className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-xl max-w-[200px] md:max-w-xs"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { duration: 0.6, delay: 0.8 }
+                  }}
+                  viewport={{ once: true }}
+                  animate={{
+                    y: [0, -10, 0],
+                    transition: {
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                >
                   <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
                     <div className="w-8 h-8 md:w-10 md:h-10 bg-[#005c65]/10 rounded-full flex items-center justify-center flex-shrink-0">
                       <svg className="w-4 h-4 md:w-6 md:h-6 text-[#005c65]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -825,7 +944,7 @@ export default function Home() {
                   <p className="text-xs md:text-sm text-gray-600">
                     Specialized therapy for trauma, anxiety, and fear recovery
                   </p>
-                </div>
+                </motion.div>
               </div>
             </div>
             
