@@ -17,8 +17,8 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 20;
-  const lineHeight = 7;
+  const margin = 25;
+  const lineHeight = 8;
   let yPosition = margin;
 
   // Helper function to add text with word wrap
@@ -38,33 +38,38 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
 
   // Helper function to add header on each page
   const addHeader = () => {
-    // Add logo
+    // Add logo with better positioning
     try {
-      doc.addImage(logoBase64, 'PNG', margin, margin - 5, 40, 20);
+      // Logo dimensions and positioning
+      const logoWidth = 50;
+      const logoHeight = 25;
+      const logoY = margin - 10;
+      doc.addImage(logoBase64, 'PNG', margin, logoY, logoWidth, logoHeight);
     } catch (e) {
       console.log('Logo could not be added:', e);
     }
     
-    // Add header text
-    doc.setFontSize(18);
+    // Add header text with better spacing
+    doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(239, 61, 61); // Primary color
-    doc.text('EMPOWER TREATMENT', pageWidth - margin, margin + 5, { align: 'right' });
+    doc.text('EMPOWER TREATMENT', pageWidth - margin, margin, { align: 'right' });
     doc.setTextColor(0, 0, 0); // Back to black
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(14);
-    doc.text('Clinical Progress Report', pageWidth - margin, margin + 14, { align: 'right' });
+    doc.text('Clinical Progress Report', pageWidth - margin, margin + 10, { align: 'right' });
     
-    // Add decorative line below header
+    // Add decorative line below header with more spacing
+    const lineY = margin + 20;
     doc.setDrawColor(239, 61, 61); // Primary color
-    doc.setLineWidth(1);
-    doc.line(margin, margin + 22, pageWidth - margin, margin + 22);
-    doc.setLineWidth(0.3);
+    doc.setLineWidth(1.5);
+    doc.line(margin, lineY, pageWidth - margin, lineY);
+    doc.setLineWidth(0.5);
     doc.setDrawColor(220, 220, 220);
-    doc.line(margin, margin + 24, pageWidth - margin, margin + 24);
+    doc.line(margin, lineY + 2, pageWidth - margin, lineY + 2);
     doc.setDrawColor(0, 0, 0); // Back to black
     doc.setLineWidth(0.2);
-    yPosition = margin + 35;
+    yPosition = lineY + 15;
   };
 
   // Add first page header

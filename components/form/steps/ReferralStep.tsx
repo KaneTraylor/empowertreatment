@@ -69,11 +69,11 @@ export function ReferralStep({ data, updateData, onNext, onBack }: StepProps) {
         </div>
       )}
 
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
         <Button
           variant="outline"
           onClick={onBack}
-          className="flex items-center"
+          className="flex items-center justify-center w-full sm:w-auto"
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -91,7 +91,7 @@ export function ReferralStep({ data, updateData, onNext, onBack }: StepProps) {
           Back
         </Button>
         
-        <Button onClick={handleNext}>
+        <Button onClick={handleNext} className="w-full sm:w-auto">
           Next
         </Button>
       </div>

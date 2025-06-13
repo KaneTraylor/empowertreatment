@@ -53,9 +53,9 @@ export function OpioidDurationStep({ data, updateData, onNext, onBack, isFirstSt
         error={error}
       />
 
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
         {!isFirstStep && (
-          <Button variant="outline" onClick={onBack} className="flex items-center">
+          <Button variant="outline" onClick={onBack} className="flex items-center justify-center w-full sm:w-auto">
             <svg
               className="w-4 h-4 mr-2"
               fill="none"
@@ -74,7 +74,7 @@ export function OpioidDurationStep({ data, updateData, onNext, onBack, isFirstSt
         )}
         <Button 
           onClick={handleNext} 
-          className={isFirstStep ? 'ml-auto' : ''}
+          className={`w-full sm:w-auto ${isFirstStep ? 'sm:ml-auto' : ''}`}
         >
           Next
         </Button>

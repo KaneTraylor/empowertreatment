@@ -243,19 +243,20 @@ export function MultiStepForm() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="w-full max-w-3xl mx-auto px-0 md:px-6">
       {currentStep > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          className="px-4 md:px-0 mb-4"
         >
           <ProgressBar currentStep={currentStep} totalSteps={activeSteps.length} />
         </motion.div>
       )}
       
       <motion.div 
-        className="bg-white rounded-lg shadow-lg p-8"
+        className="bg-white md:rounded-lg md:shadow-lg p-6 md:p-10 lg:p-12"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}

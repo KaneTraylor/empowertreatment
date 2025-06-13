@@ -208,8 +208,8 @@ export function LocationStep({ data, updateData, onNext }: StepProps) {
         </>
       )}
 
-      <div className="flex justify-end">
-        <Button onClick={handleNext} disabled={!data.stateselect}>
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+        <Button onClick={handleNext} disabled={!data.stateselect} className="w-full sm:w-auto">
           Next
         </Button>
       </div>

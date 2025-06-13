@@ -7,8 +7,10 @@ export default function FormPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 py-8">
-        <MultiStepForm />
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center py-0 md:py-12">
+        <div className="w-full">
+          <MultiStepForm />
+        </div>
       </main>
     </>
   );

@@ -123,11 +123,11 @@ export function OTPStep({ data, updateData, onNext, onBack }: StepProps) {
         <p className="text-center text-sm text-red-600">{error}</p>
       )}
 
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
         <Button
           variant="outline"
           onClick={onBack}
-          className="flex items-center"
+          className="flex items-center justify-center w-full sm:w-auto"
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -145,17 +145,19 @@ export function OTPStep({ data, updateData, onNext, onBack }: StepProps) {
           Back
         </Button>
         
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => {/* Implement resend logic */}}
             disabled={isLoading}
+            className="w-full sm:w-auto"
           >
             Send code again
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isLoading || otp.some(d => !d)}
+            className="w-full sm:w-auto"
           >
             {isLoading ? 'Verifying...' : 'Submit'}
           </Button>
