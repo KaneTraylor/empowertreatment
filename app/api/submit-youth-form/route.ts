@@ -2,14 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import sgMail from '@sendgrid/mail';
 import twilio from 'twilio';
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
+// Check for required environment variables
+const requiredEnvVars = {
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+  SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL,
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+  TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
+};
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Initialize SendGrid only if API key exists
+if (requiredEnvVars.SENDGRID_API_KEY) {
+  sgMail.setApiKey(requiredEnvVars.SENDGRID_API_KEY);
+}
+
+// Initialize Twilio only if credentials exist
+const twilioClient = requiredEnvVars.TWILIO_ACCOUNT_SID && requiredEnvVars.TWILIO_AUTH_TOKEN
+  ? twilio(requiredEnvVars.TWILIO_ACCOUNT_SID, requiredEnvVars.TWILIO_AUTH_TOKEN)
+  : null;
 
 interface YouthFormData {
   formType: 'group-home' | 'parent';
@@ -40,6 +50,23 @@ interface YouthFormData {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check for missing required environment variables
+    const missingVars = Object.entries(requiredEnvVars)
+      .filter(([_, value]) => !value)
+      .map(([key]) => key);
+
+    if (missingVars.length > 0) {
+      console.error('Missing required environment variables:', missingVars);
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Server configuration error. Please contact support.',
+          error: process.env.NODE_ENV === 'development' ? `Missing environment variables: ${missingVars.join(', ')}` : undefined
+        },
+        { status: 500 }
+      );
+    }
+
     const data: YouthFormData = await request.json();
 
     // Create HTML email content
@@ -283,7 +310,7 @@ export async function POST(request: NextRequest) {
     // Send email to internal team
     const msg = {
       to: recipients,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
+      from: requiredEnvVars.SENDGRID_FROM_EMAIL,
       subject: `Youth Services Inquiry - ${data.youthName} (${data.formType === 'group-home' ? 'Group Home' : 'Parent'})`,
       text: `New youth services inquiry received from ${data.contactName}`,
       html: htmlContent,
@@ -301,23 +328,27 @@ export async function POST(request: NextRequest) {
     ].filter(phone => phone); // Filter out any undefined numbers
 
     // Send SMS to each clinician
-    for (const phone of clinicianPhones) {
-      if (phone) {
-        try {
-          await twilioClient.messages.create({
-            body: `New Youth Services ${data.formType === 'group-home' ? 'Group Home' : 'Parent'} Inquiry\n\nYouth: ${data.youthName}, Age ${data.youthAge}\nContact: ${data.contactName}\n${data.urgencyLevel === 'immediate' ? '🚨 URGENT - Crisis Situation' : 'Priority: ' + (data.urgencyLevel === 'soon' ? 'Soon' : 'Planning')}\n\nCheck email for full details.`,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: phone
-          });
-        } catch (smsError) {
-          console.error(`Failed to send SMS to ${phone}:`, smsError);
-          // Don't fail the whole submission if SMS fails
+    if (twilioClient) {
+      for (const phone of clinicianPhones) {
+        if (phone) {
+          try {
+            await twilioClient.messages.create({
+              body: `New Youth Services ${data.formType === 'group-home' ? 'Group Home' : 'Parent'} Inquiry\n\nYouth: ${data.youthName}, Age ${data.youthAge}\nContact: ${data.contactName}\n${data.urgencyLevel === 'immediate' ? '🚨 URGENT - Crisis Situation' : 'Priority: ' + (data.urgencyLevel === 'soon' ? 'Soon' : 'Planning')}\n\nCheck email for full details.`,
+              from: requiredEnvVars.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (smsError) {
+            console.error(`Failed to send SMS to ${phone}:`, smsError);
+            // Don't fail the whole submission if SMS fails
+          }
         }
       }
+    } else {
+      console.warn('Twilio client not initialized - skipping SMS notifications');
     }
 
     // Send SMS confirmation to submitter if they provided a phone number
-    if (data.phone) {
+    if (data.phone && twilioClient) {
       try {
         // Format the phone number (assuming US numbers)
         let formattedPhone = data.phone.replace(/\D/g, '');
@@ -331,7 +362,7 @@ export async function POST(request: NextRequest) {
 
         await twilioClient.messages.create({
           body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${data.youthName} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0016.`,
-          from: process.env.TWILIO_PHONE_NUMBER,
+          from: requiredEnvVars.TWILIO_PHONE_NUMBER,
           to: formattedPhone
         });
       } catch (smsError) {
@@ -344,7 +375,7 @@ export async function POST(request: NextRequest) {
     if (data.email) {
       const confirmationMsg = {
         to: data.email,
-        from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
+        from: requiredEnvVars.SENDGRID_FROM_EMAIL,
         subject: 'Empower Treatment - Youth Services Inquiry Received',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
