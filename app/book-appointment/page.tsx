@@ -42,9 +42,9 @@ const clinicians = [
   {
     id: 'carol',
     name: 'Carol',
-    title: 'CDCA',
-    specialties: ['Chemical Dependency Counseling', 'Individual Therapy', 'Recovery Support'],
-    bio: 'Certified Chemical Dependency Counselor Assistant providing compassionate support for addiction recovery.',
+    title: 'LPCC - Youth Program Director',
+    specialties: ['Youth & Adolescent Therapy', 'Family Counseling', 'Clinical Supervision', 'Program Leadership'],
+    bio: 'Licensed Professional Clinical Counselor and Director of Youth Programs, specializing in adolescent mental health and family systems.',
     image: '/clinicians/carol.jpg', // You'll add this
     calendarUrl: 'https://calendar.app.google/GkbaoVGm9R6t37GJA',
     phone: process.env.NEXT_PUBLIC_CAROL_PHONE || '740-202-9956'
@@ -93,9 +93,10 @@ export default function BookAppointment() {
   // Need-based routing logic
   const needsMapping = {
     'medication': ['sara'],
-    'substance-use': ['kelsey', 'alex', 'carol', 'kalee', 'nycole'],
-    'mental-health': ['sara', 'kelsey', 'carol', 'kalee', 'nycole'],
+    'substance-use': ['kelsey', 'alex', 'kalee', 'nycole'],
+    'mental-health': ['kelsey', 'carol', 'kalee', 'nycole'],
     'group-therapy': ['alex'],
+    'youth-services': ['carol'],
     'assessment': ['assessment']
   };
 
@@ -356,6 +357,25 @@ export default function BookAppointment() {
                           Group Therapy
                         </h3>
                         <p className="text-gray-600 mt-1">Connect with others in recovery or facing similar challenges</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNeedSelection('youth-services')}
+                    className="w-full p-6 text-left border-2 border-gray-200 rounded-xl hover:border-primary hover:shadow-md transition-all group"
+                  >
+                    <div className="flex items-start">
+                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-red-200 transition-colors">
+                        <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                          Youth & Adolescent Services
+                        </h3>
+                        <p className="text-gray-600 mt-1">Specialized therapy for teens, young adults, and their families</p>
                       </div>
                     </div>
                   </button>
