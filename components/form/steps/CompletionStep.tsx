@@ -116,7 +116,7 @@ export function CompletionStep({ data, onBack, isFirstStep }: StepProps) {
             transition={{ delay: 0.2 }}
           >
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              🎉 You're all set!
+              🎉 You&apos;re all set!
             </h1>
             <p className="text-gray-600 mb-4">
               Thank you for taking the time to complete this assessment.
@@ -166,7 +166,7 @@ export function CompletionStep({ data, onBack, isFirstStep }: StepProps) {
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>During the call, we'll discuss your treatment goals and next steps</span>
+                <span>During the call, we&apos;ll discuss your treatment goals and next steps</span>
               </li>
             </ul>
           </motion.div>
