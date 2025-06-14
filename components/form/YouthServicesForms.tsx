@@ -131,7 +131,8 @@ export function YouthServicesForms() {
 
     // Validate required fields
     if (formType === 'group-home') {
-      if (!data.youthName && data.referralType === 'individual') {
+      const groupData = data as typeof groupHomeData;
+      if (!groupData.youthName && groupData.referralType === 'individual') {
         console.error('Youth name required for individual referral');
         setSubmitStatus('error');
         setIsSubmitting(false);
