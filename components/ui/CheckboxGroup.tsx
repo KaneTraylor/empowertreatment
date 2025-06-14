@@ -7,32 +7,47 @@ interface CheckboxOption {
 }
 
 interface CheckboxGroupProps {
-  name: string;
+  name?: string;
+  label?: string;
   options: CheckboxOption[];
-  values: string[];
+  value?: string[];
+  values?: string[];
   onChange: (values: string[]) => void;
   error?: string;
   className?: string;
+  required?: boolean;
 }
 
 export function CheckboxGroup({
   name,
+  label,
   options,
-  values = [],
+  value = [],
+  values,
   onChange,
   error,
   className,
+  required,
 }: CheckboxGroupProps) {
-  const handleChange = (value: string, checked: boolean) => {
+  // Support both 'value' and 'values' props
+  const selectedValues = value || values || [];
+  
+  const handleChange = (optionValue: string, checked: boolean) => {
     if (checked) {
-      onChange([...values, value]);
+      onChange([...selectedValues, optionValue]);
     } else {
-      onChange(values.filter(v => v !== value));
+      onChange(selectedValues.filter(v => v !== optionValue));
     }
   };
 
   return (
     <div className={cn('space-y-3', className)}>
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+      )}
       {options.map((option) => (
         <label
           key={option.value}
@@ -42,7 +57,7 @@ export function CheckboxGroup({
             type="checkbox"
             name={name}
             value={option.value}
-            checked={values.includes(option.value)}
+            checked={selectedValues.includes(option.value)}
             onChange={(e) => handleChange(option.value, e.target.checked)}
             className="w-5 h-5 mt-0.5 text-primary border-gray-300 rounded focus:ring-primary"
           />

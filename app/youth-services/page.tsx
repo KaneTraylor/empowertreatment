@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import React from 'react';
+import { YouthServicesForms } from '@/components/form/YouthServicesForms';
 
 export default function YouthServices() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -86,69 +87,47 @@ export default function YouthServices() {
       </section>
 
       {/* Marquee Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
+      <section className="relative py-16 md:py-24 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
+        <div className="relative">
           {/* Top marquee */}
-          <div className="transform rotate-3">
+          <div className="transform -rotate-2 mb-8">
             <div className="flex animate-marquee whitespace-nowrap">
               <div className="flex items-center">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-red-400 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-red-400/30 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
                   You are not alone
                 </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-red-400 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-red-400/30 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
                   You are not alone
                 </span>
               </div>
               <div className="flex items-center" aria-hidden="true">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-red-400 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-red-400/30 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
                   You are not alone
                 </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-red-400 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-red-400/30 hover:text-red-400 transition-all duration-300 cursor-default marquee-text">
                   You are not alone
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Middle marquee - opposite direction */}
-          <div className="transform -rotate-2 absolute">
+          {/* Bottom marquee - opposite direction */}
+          <div className="transform rotate-2">
             <div className="flex animate-marquee-reverse whitespace-nowrap">
               <div className="flex items-center">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-amber-400 hover:text-amber-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-teal-400/30 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
                   Help is here
                 </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-amber-400 hover:text-amber-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-teal-400/30 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
                   Help is here
                 </span>
               </div>
               <div className="flex items-center" aria-hidden="true">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-amber-400 hover:text-amber-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-teal-400/30 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
                   Help is here
                 </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-amber-400 hover:text-amber-400 transition-all duration-300 cursor-default marquee-text">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-teal-400/30 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
                   Help is here
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom marquee */}
-          <div className="transform rotate-1 absolute bottom-0">
-            <div className="flex animate-marquee whitespace-nowrap">
-              <div className="flex items-center">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-teal-400 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
-                  Your feelings matter
-                </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-teal-400 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
-                  Your feelings matter
-                </span>
-              </div>
-              <div className="flex items-center" aria-hidden="true">
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-teal-400 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
-                  Your feelings matter
-                </span>
-                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-teal-400 hover:text-teal-400 transition-all duration-300 cursor-default marquee-text">
-                  Your feelings matter
                 </span>
               </div>
             </div>
@@ -220,7 +199,7 @@ export default function YouthServices() {
         </div>
       </section>
 
-      {/* Understanding Teen Challenges */}
+      {/* Comprehensive Services Section */}
       <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12">
           <motion.div 
@@ -231,92 +210,418 @@ export default function YouthServices() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-              We Get What You&apos;re Going Through
+              Comprehensive Youth Mental Health Services
             </h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-              Being a teenager today isn&apos;t easy. We&apos;re here to help with the challenges that matter most to you.
+              From counseling to crisis intervention, we offer a full spectrum of services designed specifically for teens and young adults.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Academic Pressure",
-                description: "Feeling overwhelmed by school, grades, and future expectations? We can help you manage stress and find balance.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          {/* Service Categories */}
+          <div className="space-y-16">
+            {/* Counseling & Therapy Services */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <div className="w-12 h-12 bg-[#ef3d3d]/10 rounded-full flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-[#ef3d3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                   </svg>
-                )
-              },
-              {
-                title: "Social Media & Peer Pressure",
-                description: "Navigate the complexities of social relationships and online life with support from someone who understands.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </div>
+                Counseling & Therapy Services
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "Individual Therapy",
+                    description: "One-on-one sessions tailored to your teen's specific needs and goals"
+                  },
+                  {
+                    title: "Group Therapy",
+                    description: "Connect with peers facing similar challenges in a supportive environment"
+                  },
+                  {
+                    title: "Family Therapy",
+                    description: "Strengthen family bonds and improve communication together"
+                  },
+                  {
+                    title: "Home-Based Counseling",
+                    description: "Receive therapy in the comfort and privacy of your own home"
+                  },
+                  {
+                    title: "School-Based Services",
+                    description: "On-site counseling and support within your teen's school"
+                  },
+                  {
+                    title: "Intensive Home-Based Treatment",
+                    description: "Comprehensive care for teens needing more frequent support"
+                  }
+                ].map((service, index) => (
+                  <div key={index} className="bg-[#faf8f5] rounded-xl p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{service.title}</h4>
+                    <p className="text-gray-600">{service.description}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Specialized Programs */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <div className="w-12 h-12 bg-[#005c65]/10 rounded-full flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-[#005c65]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                   </svg>
-                )
-              },
-              {
-                title: "Anxiety & Depression",
-                description: "You're not alone. Learn healthy coping strategies and get the support you need to feel better.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Family Conflicts",
-                description: "Improve communication with parents and siblings. We can help bridge the gap and build understanding.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Identity & Self-Discovery",
-                description: "Explore who you are in a safe, judgment-free space. Your journey of self-discovery is valid and important.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </div>
+                Specialized Treatment Programs
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white border-2 border-[#005c65]/20 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-[#005c65] mb-3">Psychiatric Services</h4>
+                  <p className="text-gray-600 mb-4">
+                    Comprehensive psychiatric evaluation and medication management by specialized child and adolescent psychiatrists.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Initial psychiatric evaluation
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Medication management
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Regular monitoring and adjustments
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-white border-2 border-[#ef3d3d]/20 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-[#ef3d3d] mb-3">Crisis Intervention Services</h4>
+                  <p className="text-gray-600 mb-4">
+                    24/7 support for teens and families experiencing mental health emergencies or crisis situations.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      24/7 crisis hotline
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Emergency assessment
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Safety planning
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Treatment Focus Areas */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <div className="w-12 h-12 bg-amber-400/20 rounded-full flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
-                )
-              },
-              {
-                title: "Substance Use Concerns",
-                description: "Get help without judgment. We understand experimentation and can help you make safer choices.",
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                )
-              }
-            ].map((challenge, index) => (
-              <motion.div 
-                key={index}
-                className="bg-[#faf8f5] rounded-2xl p-8 hover:shadow-lg transition-all duration-300"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="w-14 h-14 bg-[#ef3d3d]/10 rounded-full flex items-center justify-center mb-6 text-[#ef3d3d]">
-                  {challenge.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{challenge.title}</h3>
-                <p className="text-gray-600">{challenge.description}</p>
-              </motion.div>
-            ))}
+                What We Help With
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  "Anxiety & Panic Disorders",
+                  "Depression & Mood Disorders",
+                  "ADHD & Behavioral Issues",
+                  "Trauma & PTSD",
+                  "Substance Use & Addiction",
+                  "Self-Harm & Suicidal Ideation",
+                  "Eating Disorders",
+                  "School Refusal & Academic Issues",
+                  "Social Skills & Peer Relationships",
+                  "Anger Management",
+                  "Family Conflicts",
+                  "Identity & Self-Esteem Issues"
+                ].map((issue, index) => (
+                  <div key={index} className="bg-amber-50 rounded-lg p-4 text-center">
+                    <p className="text-gray-800 font-medium">{issue}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Additional Support Services */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-gradient-to-br from-[#005c65] to-[#004a52] rounded-2xl p-8 md:p-12 text-white"
+            >
+              <h3 className="text-2xl md:text-3xl font-bold mb-8">Comprehensive Support Services</h3>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-xl font-semibold mb-4 flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Case Management & Coordination
+                  </h4>
+                  <ul className="space-y-2 text-white/90">
+                    <li>• Individualized treatment planning</li>
+                    <li>• School collaboration and advocacy</li>
+                    <li>• Community resource connections</li>
+                    <li>• Insurance navigation assistance</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-4 flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Educational Support
+                  </h4>
+                  <ul className="space-y-2 text-white/90">
+                    <li>• Parenting education and guidance</li>
+                    <li>• Coping skills workshops</li>
+                    <li>• Mental health education for teens</li>
+                    <li>• Conflict resolution training</li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Specialized Youth Programs Section */}
+      <section className="py-16 md:py-24 bg-[#faf8f5]">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Specialized Programs for Every Need
+            </h2>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+              Evidence-based programs designed to address specific challenges teens face today.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* TBS Program */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-[#ef3d3d] to-[#dc2626] p-6">
+                <h3 className="text-2xl font-bold text-white">Therapeutic Behavioral Services (TBS)</h3>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Intensive support for teens with significant behavioral challenges who need more than traditional therapy.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">One-on-one behavioral coaching</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">In-home and community-based support</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Skill-building for daily life challenges</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#ef3d3d] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">24/7 crisis support access</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Substance Use Program */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-[#005c65] to-[#004a52] p-6">
+                <h3 className="text-2xl font-bold text-white">Substance Use Recovery Program</h3>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Specialized treatment for teens struggling with substance use, combining therapy with peer support.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Individual and group counseling</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Family involvement and education</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Relapse prevention planning</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-[#005c65] mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Peer recovery support groups</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* School Partnership Program */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-6">
+                <h3 className="text-2xl font-bold text-white">School-Based Mental Health</h3>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Bringing mental health services directly to schools, making support accessible where teens spend their time.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">On-site counseling during school hours</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Teacher and staff consultation</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Academic support coordination</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Crisis response team availability</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Functional Family Therapy */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-6">
+                <h3 className="text-2xl font-bold text-white">Functional Family Therapy (FFT)</h3>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Evidence-based program that works with the whole family to create lasting positive change.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-purple-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Short-term, high-impact therapy</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-purple-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Focus on family strengths</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-purple-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Improve family communication</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-purple-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-gray-700">Reduce youth problem behaviors</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* How It Works for Teens */}
-      <section className="py-16 md:py-24 bg-[#faf8f5]">
+      <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12">
           <motion.div 
             className="text-center mb-16"
@@ -610,6 +915,9 @@ export default function YouthServices() {
           </motion.div>
         </div>
       </section>
+
+      {/* Forms Section */}
+      <YouthServicesForms />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
