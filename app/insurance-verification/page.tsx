@@ -67,12 +67,14 @@ export default function InsuranceVerification() {
       });
 
       const result = await response.json();
+      console.log('Verification result:', result);
 
       if (result.success && result.mockResult) {
         setVerificationResult(result.mockResult);
         setStep('results');
       } else {
         // Handle error
+        console.error('Verification failed:', result);
         setVerificationResult({
           isAccepted: false
         });

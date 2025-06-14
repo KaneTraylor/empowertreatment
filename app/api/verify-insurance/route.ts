@@ -177,12 +177,17 @@ export async function POST(request: NextRequest) {
     `;
 
     // Send email to admissions team
-    await sgMail.send({
-      to: ['admissions@empowertreatment.com', 'insurance@empowertreatment.com'],
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
-      subject: `Insurance Verification Request - ${data.firstName} ${data.lastName}`,
-      html: htmlContent,
-    });
+    try {
+      await sgMail.send({
+        to: ['admissions@empowertreatment.com', 'insurance@empowertreatment.com'],
+        from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
+        subject: `Insurance Verification Request - ${data.firstName} ${data.lastName}`,
+        html: htmlContent,
+      });
+    } catch (emailError) {
+      console.error('Failed to send admin email:', emailError);
+      // Don't fail the verification if email fails
+    }
 
     // Send confirmation email to patient
     const patientEmailContent = `
@@ -251,16 +256,27 @@ export async function POST(request: NextRequest) {
       </html>
     `;
 
-    await sgMail.send({
-      to: data.email,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
-      subject: 'Insurance Verification Request Received - Empower Treatment',
-      html: patientEmailContent,
-    });
+    try {
+      await sgMail.send({
+        to: data.email,
+        from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
+        subject: 'Insurance Verification Request Received - Empower Treatment',
+        html: patientEmailContent,
+      });
+    } catch (emailError) {
+      console.error('Failed to send patient email:', emailError);
+      // Don't fail the verification if email fails
+    }
 
     // All providers listed in the form are in-network
     const inNetworkProviders = ['aetna', 'anthem-bcbs', 'bcbs', 'cigna', 'humana', 'kaiser', 'medicaid', 'medicare', 'united', 'wellcare'];
     const isAccepted = inNetworkProviders.includes(data.insuranceProvider) || data.insuranceProvider === 'other';
+    
+    console.log('Insurance verification:', {
+      provider: data.insuranceProvider,
+      isAccepted,
+      inNetworkProviders
+    });
 
     return NextResponse.json({
       success: true,
