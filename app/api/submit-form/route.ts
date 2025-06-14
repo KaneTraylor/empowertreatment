@@ -508,10 +508,20 @@ export async function POST(request: NextRequest) {
     const notificationEmails = process.env.NOTIFICATION_EMAILS || '';
     const recipients = notificationEmails.split(',').map(email => email.trim()).filter(Boolean);
     
-    // Always include Kane
-    if (!recipients.includes('kane@empowertreatment.com')) {
-      recipients.push('kane@empowertreatment.com');
-    }
+    // Always include key team members
+    const requiredRecipients = [
+      'kane@empowertreatment.com',
+      'taylor@empowertreatment.com',
+      'kelsey@empowertreatment.com',
+      'kalee@empowertreatment.com',
+      'dottie@empowertreatment.com'
+    ];
+    
+    requiredRecipients.forEach(email => {
+      if (!recipients.includes(email)) {
+        recipients.push(email);
+      }
+    });
     
     // Fallback to from email if no recipients configured
     if (recipients.length === 0) {
