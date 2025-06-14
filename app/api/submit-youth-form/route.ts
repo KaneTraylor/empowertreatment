@@ -30,9 +30,15 @@ interface YouthFormData {
   phone: string;
   state: string;
   
+  // Referral Type (for group homes)
+  referralType?: 'individual' | 'multiple' | 'entire-house';
+  
   // Youth Information
-  youthName: string;
-  youthAge: string;
+  youthName?: string; // Optional for group homes with multiple/entire-house
+  youthAge?: string; // Optional for group homes with multiple/entire-house
+  numberOfYouth?: string; // For multiple or entire-house referrals
+  ageRange?: string; // For entire-house referrals
+  groupDescription?: string; // For multiple youth referrals
   
   // Assessment Information
   primaryConcerns: string[];
@@ -104,9 +110,16 @@ export async function POST(request: NextRequest) {
                                 ${data.organizationName ? `<p style="margin: 2px 0 0 0; color: #6b7280; font-size: 14px;">${data.organizationName}</p>` : ''}
                               </td>
                               <td width="50%" align="right">
-                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">YOUTH NAME</p>
-                                <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${data.youthName}</p>
-                                <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 14px;">Age: ${data.youthAge}</p>
+                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">REFERRAL FOR</p>
+                                <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">
+                                  ${data.referralType === 'individual' ? data.youthName : 
+                                    data.referralType === 'multiple' ? `${data.numberOfYouth} Youth` : 
+                                    `Entire Facility (${data.numberOfYouth} Residents)`}
+                                </p>
+                                <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 14px;">
+                                  ${data.referralType === 'individual' ? `Age: ${data.youthAge}` : 
+                                    data.referralType === 'entire-house' ? `Ages: ${data.ageRange}` : ''}
+                                </p>
                               </td>
                             </tr>
                           </table>
@@ -190,6 +203,14 @@ export async function POST(request: NextRequest) {
                     <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
                       <span style="color: #ef3d3d;">🏥</span> Youth Assessment
                     </h2>
+                    
+                    ${data.referralType === 'multiple' && data.groupDescription ? `
+                    <!-- Youth Details for Multiple Referral -->
+                    <div style="background-color: #e0e7ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                      <p style="margin: 0 0 8px 0; color: #3730a3; font-size: 13px; font-weight: 600; text-transform: uppercase;">Youth Details</p>
+                      <p style="margin: 0; color: #4c1d95; font-size: 14px; white-space: pre-wrap;">${data.groupDescription}</p>
+                    </div>
+                    ` : ''}
                     
                     <!-- Primary Concerns -->
                     <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">

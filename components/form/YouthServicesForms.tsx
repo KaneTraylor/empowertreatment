@@ -20,8 +20,12 @@ export function YouthServicesForms() {
     email: '',
     phone: '',
     state: '',
+    referralType: 'individual' as 'individual' | 'multiple' | 'entire-house',
     youthName: '',
     youthAge: '',
+    numberOfYouth: '',
+    ageRange: '',
+    groupDescription: '',
     primaryConcerns: [] as string[],
     currentMedications: '',
     insuranceProvider: '',
@@ -145,8 +149,12 @@ export function YouthServicesForms() {
             email: '',
             phone: '',
             state: '',
+            referralType: 'individual',
             youthName: '',
             youthAge: '',
+            numberOfYouth: '',
+            ageRange: '',
+            groupDescription: '',
             primaryConcerns: [],
             currentMedications: '',
             insuranceProvider: '',
@@ -327,26 +335,116 @@ export function YouthServicesForms() {
                   </div>
                 </div>
 
-                {/* Youth Information */}
+                {/* Referral Type */}
+                <div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-4">Referral Type</h4>
+                  <div className="space-y-3">
+                    <label className="flex items-start cursor-pointer">
+                      <input
+                        type="radio"
+                        name="referralType"
+                        value="individual"
+                        checked={groupHomeData.referralType === 'individual'}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, referralType: e.target.value as any })}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <span className="font-medium">Individual Youth</span>
+                        <p className="text-sm text-gray-600">Referral for a specific youth</p>
+                      </div>
+                    </label>
+                    <label className="flex items-start cursor-pointer">
+                      <input
+                        type="radio"
+                        name="referralType"
+                        value="multiple"
+                        checked={groupHomeData.referralType === 'multiple'}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, referralType: e.target.value as any })}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <span className="font-medium">Multiple Youth</span>
+                        <p className="text-sm text-gray-600">Referral for several specific youth</p>
+                      </div>
+                    </label>
+                    <label className="flex items-start cursor-pointer">
+                      <input
+                        type="radio"
+                        name="referralType"
+                        value="entire-house"
+                        checked={groupHomeData.referralType === 'entire-house'}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, referralType: e.target.value as any })}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <span className="font-medium">Entire House/Facility</span>
+                        <p className="text-sm text-gray-600">Services for all residents in your facility</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Youth Information - Conditional based on referral type */}
                 <div>
                   <h4 className="text-lg font-medium text-gray-900 mb-4">Youth Information</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      label="Youth's Name"
-                      required
-                      value={groupHomeData.youthName}
-                      onChange={(e) => setGroupHomeData({ ...groupHomeData, youthName: e.target.value })}
-                    />
-                    <Input
-                      label="Age"
-                      type="number"
-                      min="13"
-                      max="25"
-                      required
-                      value={groupHomeData.youthAge}
-                      onChange={(e) => setGroupHomeData({ ...groupHomeData, youthAge: e.target.value })}
-                    />
-                  </div>
+                  {groupHomeData.referralType === 'individual' && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Input
+                        label="Youth's Name"
+                        required
+                        value={groupHomeData.youthName}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, youthName: e.target.value })}
+                      />
+                      <Input
+                        label="Age"
+                        type="number"
+                        min="13"
+                        max="25"
+                        required
+                        value={groupHomeData.youthAge}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, youthAge: e.target.value })}
+                      />
+                    </div>
+                  )}
+                  {groupHomeData.referralType === 'multiple' && (
+                    <div className="space-y-4">
+                      <Textarea
+                        label="Youth Names and Ages"
+                        placeholder="Please list each youth's name and age (e.g., John Doe - 16, Jane Smith - 17)"
+                        rows={4}
+                        required
+                        value={groupHomeData.groupDescription}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, groupDescription: e.target.value })}
+                      />
+                      <Input
+                        label="Number of Youth"
+                        type="number"
+                        min="2"
+                        required
+                        value={groupHomeData.numberOfYouth}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, numberOfYouth: e.target.value })}
+                      />
+                    </div>
+                  )}
+                  {groupHomeData.referralType === 'entire-house' && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Input
+                        label="Number of Residents"
+                        type="number"
+                        min="1"
+                        required
+                        value={groupHomeData.numberOfYouth}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, numberOfYouth: e.target.value })}
+                      />
+                      <Input
+                        label="Age Range of Residents"
+                        placeholder="e.g., 14-18"
+                        required
+                        value={groupHomeData.ageRange}
+                        onChange={(e) => setGroupHomeData({ ...groupHomeData, ageRange: e.target.value })}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Assessment Information */}
