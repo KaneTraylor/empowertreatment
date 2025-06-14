@@ -14,12 +14,14 @@ export async function GET(request: NextRequest) {
     const token = cookieStore.get('admin-token');
     
     if (!token) {
+      console.log('No admin token found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
       jwt.verify(token.value, process.env.JWT_SECRET || 'empower-treatment-admin-secret-2024');
     } catch (error) {
+      console.error('Token verification failed:', error);
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
     const searchParams = request.nextUrl.searchParams;
@@ -37,7 +39,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Return JSON by default
+    console.log('Fetching submissions...');
     const submissions = await getSubmissions();
+    console.log(`Found ${submissions.length} submissions`);
     
     return NextResponse.json({
       success: true,
@@ -47,8 +51,15 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error exporting submissions:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return NextResponse.json(
-      { error: 'Failed to export submissions' },
+      { 
+        error: 'Failed to export submissions',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }

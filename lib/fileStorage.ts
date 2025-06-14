@@ -36,7 +36,7 @@ export async function saveSubmission(formData: any): Promise<FileSubmission> {
   await initStorage();
   
   const submission: FileSubmission = {
-    id: crypto.randomUUID(),
+    id: `SUB-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     created_at: new Date().toISOString(),
     data: formData,
     status: 'pending'
@@ -57,12 +57,25 @@ export async function saveSubmission(formData: any): Promise<FileSubmission> {
 
 // Get all submissions
 export async function getSubmissions(): Promise<FileSubmission[]> {
-  await initStorage();
-  const fileContent = await fs.readFile(SUBMISSIONS_FILE, 'utf-8');
-  const storage = JSON.parse(fileContent);
-  return storage.submissions.sort((a: FileSubmission, b: FileSubmission) => 
-    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
+  try {
+    await initStorage();
+    const fileContent = await fs.readFile(SUBMISSIONS_FILE, 'utf-8');
+    const storage = JSON.parse(fileContent);
+    
+    // Handle case where submissions might be undefined
+    if (!storage.submissions || !Array.isArray(storage.submissions)) {
+      console.warn('No submissions array found in storage file');
+      return [];
+    }
+    
+    return storage.submissions.sort((a: FileSubmission, b: FileSubmission) => 
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  } catch (error) {
+    console.error('Error reading submissions:', error);
+    // Return empty array on error to prevent crashes
+    return [];
+  }
 }
 
 // Update submission status
