@@ -52,35 +52,43 @@ export async function POST(request: NextRequest) {
       destination: data.destination,
       destination_address: data.destinationAddress,
       purpose: data.purposeOfVisit,
-      purpose_of_visit: data.purposeOfVisit,
       emergency_contact_name: data.emergencyContactName,
       emergency_contact_phone: data.emergencyContactPhone,
       emergency_contact_relationship: data.emergencyContactRelationship,
       transportation_method: data.transportationMethod,
-      driver_name: data.driverName,
-      vehicle_info: data.vehicleInfo,
+      driver_name: data.driverName || null,
+      vehicle_info: data.vehicleInfo || null,
       agreements: data.agreements,
       signature: data.signature,
       signature_date: data.signatureDate,
-      status: 'pending' as const,
-      created_at: new Date().toISOString()
+      status: 'pending' as const
+      // Don't include created_at - let the database handle it with its default
     };
 
     // Store in Supabase if available
     let saved = false;
     if (supabase) {
+      console.log('Attempting to save weekend pass to Supabase...');
+      console.log('Pass data:', JSON.stringify(passData, null, 2));
       const { error: dbError } = await supabase
         .from('weekend_passes')
         .insert(passData);
 
       if (dbError) {
         console.error('Database error:', dbError);
+        console.error('Database error details:', {
+          code: dbError.code,
+          message: dbError.message,
+          details: dbError.details,
+          hint: dbError.hint
+        });
         // If table doesn't exist, we'll use local storage
         if (dbError.code === '42P01') { // 42P01 is "undefined table" error
           console.warn('Weekend passes table does not exist. Using local storage.');
         }
       } else {
         saved = true;
+        console.log('Weekend pass saved to Supabase successfully');
       }
     }
     
@@ -123,7 +131,11 @@ Review and approve: ${approvalLink}`;
         })
       );
 
-      await Promise.all(smsPromises);
+      const smsResults = await Promise.all(smsPromises);
+      console.log('SMS send results:', smsResults.map((r, i) => ({
+        phone: [kelseyPhone, kaleePhone, kanePhone][i],
+        success: r !== null
+      })));
     } else {
       console.warn('Twilio not configured - SMS notifications will not be sent');
     }
@@ -250,8 +262,14 @@ Review and approve: ${approvalLink}`;
 
       try {
         await sgMail.sendMultiple(emailContent);
+        console.log('Email sent successfully to:', emailContent.to);
       } catch (emailError) {
         console.error('Email error:', emailError);
+        console.error('Email error details:', {
+          message: emailError.message,
+          code: emailError.code,
+          response: emailError.response?.body
+        });
       }
     } else {
       console.warn('SendGrid not configured - email notifications will not be sent');

@@ -75,16 +75,24 @@ export async function GET(request: NextRequest) {
 
     // Try to fetch from Supabase first
     if (supabase) {
+      console.log('Fetching weekend passes from Supabase...');
       const { data, error } = await supabase
         .from('weekend_passes')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (!error) {
+        console.log(`Found ${data?.length || 0} weekend passes in Supabase`);
         return NextResponse.json({ passes: data || [] });
       }
       
       console.error('Error fetching from Supabase:', error);
+      console.error('Supabase error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
     }
 
     // Fallback to local storage
