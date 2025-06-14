@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import twilio from 'twilio';
 import sgMail from '@sendgrid/mail';
 import { createClient } from '@supabase/supabase-js';
+import { saveWeekendPass } from '@/lib/weekendPassStorage';
 
 // Validate environment variables
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
@@ -38,46 +39,59 @@ export async function POST(request: NextRequest) {
     const departureDateTime = new Date(`${data.departureDate} ${data.departureTime}`);
     const returnDateTime = new Date(`${data.returnDate} ${data.returnTime}`);
     
+    // Prepare pass data
+    const passData = {
+      pass_id: passId,
+      resident_name: data.residentName,
+      room_number: data.roomNumber,
+      phone: data.phone,
+      departure_date: data.departureDate,
+      departure_time: data.departureTime,
+      return_date: data.returnDate,
+      return_time: data.returnTime,
+      destination: data.destination,
+      destination_address: data.destinationAddress,
+      purpose: data.purposeOfVisit,
+      purpose_of_visit: data.purposeOfVisit,
+      emergency_contact_name: data.emergencyContactName,
+      emergency_contact_phone: data.emergencyContactPhone,
+      emergency_contact_relationship: data.emergencyContactRelationship,
+      transportation_method: data.transportationMethod,
+      driver_name: data.driverName,
+      vehicle_info: data.vehicleInfo,
+      agreements: data.agreements,
+      signature: data.signature,
+      signature_date: data.signatureDate,
+      status: 'pending' as const,
+      created_at: new Date().toISOString()
+    };
+
     // Store in Supabase if available
+    let saved = false;
     if (supabase) {
       const { error: dbError } = await supabase
         .from('weekend_passes')
-        .insert({
-        pass_id: passId,
-        resident_name: data.residentName,
-        room_number: data.roomNumber,
-        phone: data.phone,
-        departure_date: data.departureDate,
-        departure_time: data.departureTime,
-        return_date: data.returnDate,
-        return_time: data.returnTime,
-        destination: data.destination,
-        destination_address: data.destinationAddress,
-        purpose: data.purposeOfVisit,
-        emergency_contact_name: data.emergencyContactName,
-        emergency_contact_phone: data.emergencyContactPhone,
-        emergency_contact_relationship: data.emergencyContactRelationship,
-        transportation_method: data.transportationMethod,
-        driver_name: data.driverName,
-        vehicle_info: data.vehicleInfo,
-        agreements: data.agreements,
-        signature: data.signature,
-        signature_date: data.signatureDate,
-        status: 'pending',
-        created_at: new Date().toISOString()
-        });
+        .insert(passData);
 
       if (dbError) {
         console.error('Database error:', dbError);
-        // If table doesn't exist, we'll still send notifications but warn the user
+        // If table doesn't exist, we'll use local storage
         if (dbError.code === '42P01') { // 42P01 is "undefined table" error
-          console.warn('Weekend passes table does not exist. Notifications will still be sent.');
-        } else {
-          console.error('Failed to save pass request:', dbError);
+          console.warn('Weekend passes table does not exist. Using local storage.');
         }
+      } else {
+        saved = true;
       }
-    } else {
-      console.warn('Supabase not configured - pass data will not be stored');
+    }
+    
+    // If not saved to Supabase, save locally
+    if (!saved) {
+      try {
+        await saveWeekendPass(passData);
+        console.log('Weekend pass saved to local storage');
+      } catch (localError) {
+        console.error('Failed to save to local storage:', localError);
+      }
     }
 
     // Create approval link

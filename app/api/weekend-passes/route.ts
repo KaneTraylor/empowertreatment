@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { getWeekendPasses, updatePassStatus } from '@/lib/weekendPassStorage';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -72,26 +73,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Fetch weekend passes
+    // Try to fetch from Supabase first
     if (supabase) {
       const { data, error } = await supabase
         .from('weekend_passes')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching weekend passes:', error);
-        // If table doesn't exist, return mock data
-        if (error.code === '42P01') {
-          return NextResponse.json({ passes: mockPasses });
-        }
-        return NextResponse.json({ error: 'Failed to fetch passes' }, { status: 500 });
+      if (!error) {
+        return NextResponse.json({ passes: data || [] });
       }
+      
+      console.error('Error fetching from Supabase:', error);
+    }
 
-      return NextResponse.json({ passes: data || [] });
-    } else {
-      // Return mock data if Supabase is not configured
-      return NextResponse.json({ passes: mockPasses });
+    // Fallback to local storage
+    try {
+      const localPasses = await getWeekendPasses();
+      console.log('Fetched from local storage:', localPasses.length, 'passes');
+      return NextResponse.json({ passes: localPasses });
+    } catch (localError) {
+      console.error('Error fetching from local storage:', localError);
+      // Return empty array if both fail
+      return NextResponse.json({ passes: [] });
     }
   } catch (error) {
     console.error('Error in weekend passes API:', error);
@@ -123,9 +127,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Update pass status
+    const newStatus = action === 'approve' ? 'approved' : 'denied';
+    
+    // Try to update in Supabase first
     if (supabase) {
-      const newStatus = action === 'approve' ? 'approved' : 'denied';
       const { error } = await supabase
         .from('weekend_passes')
         .update({
@@ -135,18 +140,32 @@ export async function POST(request: NextRequest) {
         })
         .eq('pass_id', passId);
 
-      if (error) {
-        console.error('Error updating pass:', error);
-        // Continue anyway for demo purposes
+      if (!error) {
+        return NextResponse.json({ 
+          success: true, 
+          message: `Pass ${action}d successfully` 
+        });
       }
+      
+      console.error('Error updating in Supabase:', error);
     }
 
-    // In a real implementation, we would also send SMS notifications here
-    // For now, just return success
-    return NextResponse.json({ 
-      success: true, 
-      message: `Pass ${action}d successfully` 
-    });
+    // Fallback to local storage
+    try {
+      const updatedPass = await updatePassStatus(passId, newStatus as 'approved' | 'denied', user);
+      if (updatedPass) {
+        console.log('Updated pass in local storage:', passId);
+        return NextResponse.json({ 
+          success: true, 
+          message: `Pass ${action}d successfully` 
+        });
+      } else {
+        return NextResponse.json({ error: 'Pass not found' }, { status: 404 });
+      }
+    } catch (localError) {
+      console.error('Error updating in local storage:', localError);
+      return NextResponse.json({ error: 'Failed to update pass' }, { status: 500 });
+    }
 
   } catch (error) {
     console.error('Error updating weekend pass:', error);

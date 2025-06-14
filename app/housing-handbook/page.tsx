@@ -146,7 +146,7 @@ export default function HousingHandbook() {
                 <CurrentSectionComponent 
                   onAcknowledge={() => handleAcknowledge(sections[currentSection].id)}
                   isAcknowledged={acknowledgedSections.includes(sections[currentSection].id)}
-                  allSectionsComplete={acknowledgedSections.length === sections.length}
+                  allSectionsComplete={acknowledgedSections.length >= sections.length - 1}
                 />
               </motion.div>
             </AnimatePresence>

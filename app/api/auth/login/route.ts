@@ -13,6 +13,9 @@ const supabase = supabaseUrl && supabaseServiceKey
 
 // Define allowed employee emails
 const ALLOWED_EMAILS = [
+  // Admin
+  'admin@empowertreatment.com',
+  
   // Leadership
   'kane@empowertreatment.com',
   'taylor@empowertreatment.com',
@@ -66,10 +69,12 @@ export async function POST(request: NextRequest) {
     const token = jwt.sign(
       { 
         email: email.toLowerCase(),
-        role: 'admin',
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) // 24 hours
+        role: 'admin'
       },
-      jwtSecret
+      jwtSecret,
+      {
+        expiresIn: '24h'
+      }
     );
 
     // Set HTTP-only cookie
@@ -93,7 +98,8 @@ export async function POST(request: NextRequest) {
     console.error('Login error:', error);
     return NextResponse.json({
       success: false,
-      message: 'An error occurred during login'
+      message: 'An error occurred during login',
+      error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }

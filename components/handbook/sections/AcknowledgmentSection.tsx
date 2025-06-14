@@ -14,10 +14,14 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted:', { residentName, agreed, allSectionsComplete });
     if (residentName && agreed && allSectionsComplete) {
       onAcknowledge();
     }
   };
+
+  // Debug logging
+  console.log('AcknowledgmentSection render:', { allSectionsComplete, isAcknowledged });
 
   return (
     <div className="p-8">
@@ -51,6 +55,9 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
                 <p className="mt-2 text-sm text-yellow-700">
                   You must read and acknowledge all previous sections before you can submit your final acknowledgment.
                 </p>
+                <p className="mt-1 text-xs text-yellow-600">
+                  Debug: allSectionsComplete = {String(allSectionsComplete)}
+                </p>
               </div>
             </div>
           </div>
@@ -72,7 +79,7 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
                     id="residentName"
                     value={residentName}
                     onChange={(e) => setResidentName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005c65] focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005c65] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Enter your full name"
                     disabled={!allSectionsComplete || isAcknowledged}
                     required
@@ -88,7 +95,7 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
                     id="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005c65] focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005c65] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     disabled={!allSectionsComplete || isAcknowledged}
                     required
                   />
@@ -100,9 +107,8 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
                       type="checkbox"
                       checked={agreed}
                       onChange={(e) => setAgreed(e.target.checked)}
-                      className="mt-1 w-4 h-4 text-[#005c65] rounded border-gray-300 focus:ring-[#005c65]"
+                      className="mt-1 w-4 h-4 text-[#005c65] rounded border-gray-300 focus:ring-[#005c65] disabled:opacity-50"
                       disabled={!allSectionsComplete || isAcknowledged}
-                      required
                     />
                     <span className="ml-3 text-sm text-gray-700">
                       I have read, understood, and agree to all terms and conditions outlined in this Recovery Housing 
