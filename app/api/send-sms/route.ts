@@ -39,8 +39,16 @@ setInterval(() => {
 }, 3600000);
 
 export async function POST(request: NextRequest) {
+  console.log('Send-SMS API called');
+  console.log('Environment check:', {
+    SENDGRID_API_KEY: !!process.env.SENDGRID_API_KEY,
+    SENDGRID_FROM_EMAIL: !!process.env.SENDGRID_FROM_EMAIL,
+    TWILIO_CONFIGURED: !!twilioClient
+  });
+  
   try {
     const { phone, email } = await request.json();
+    console.log('Request data:', { phone: !!phone, email: !!email });
     
     // Get client IP for rate limiting
     const clientIp = request.headers.get('x-forwarded-for') || 
@@ -119,6 +127,7 @@ export async function POST(request: NextRequest) {
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log('Generated OTP:', otp);
     
     // Store OTP in cookies (you might want to use a more secure method in production)
     const cookieStore = cookies();
@@ -149,6 +158,11 @@ export async function POST(request: NextRequest) {
 
     // Format phone number if provided
     const formattedPhone = phone ? `+1${phone.replace(/\D/g, '')}` : null;
+    console.log('Checking email/SMS sending:', { 
+      hasEmail: !!email, 
+      hasPhone: !!formattedPhone,
+      sendGridConfigured: !!(process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL)
+    });
 
     try {
       // Send SMS if phone number is provided and Twilio is configured
@@ -416,10 +430,12 @@ export async function POST(request: NextRequest) {
           console.error('SendGrid error details:', emailError.response?.body);
           // Don't fail the whole request if email fails
         }
-      } else if (email && !process.env.SENDGRID_API_KEY) {
-        console.warn('SendGrid not configured - Email not sent');
-      } else if (email && !process.env.SENDGRID_FROM_EMAIL) {
-        console.warn('SendGrid FROM_EMAIL not configured - Email not sent');
+      } else if (email) {
+        console.warn('Email not sent - missing configuration:', {
+          hasEmail: true,
+          hasSendGridKey: !!process.env.SENDGRID_API_KEY,
+          hasFromEmail: !!process.env.SENDGRID_FROM_EMAIL
+        });
       }
 
       // Return success even if SMS/email sending failed

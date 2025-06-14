@@ -195,6 +195,10 @@ export function MultiStepForm() {
       
       // Send OTP before moving to OTP step
       if (formData.email || formData.mobileNumber) {
+        console.log('Sending OTP request with:', {
+          phone: formData.mobileNumber,
+          email: formData.email
+        });
         try {
           const response = await fetch('/api/send-sms', {
             method: 'POST',
@@ -211,6 +215,9 @@ export function MultiStepForm() {
             alert('Failed to send verification code. Please try again.');
             return;
           }
+          
+          const result = await response.json();
+          console.log('OTP send response:', result);
           
           // Successfully sent OTP, now advance to OTP step
           goToNextStep();
