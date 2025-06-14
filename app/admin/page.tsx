@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { Header } from '@/components/Header';
 
 interface Submission {
   id: string;
@@ -10,14 +12,39 @@ interface Submission {
   status: string;
 }
 
+interface User {
+  email: string;
+  role: string;
+}
+
 export default function AdminPage() {
+  const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [authenticating, setAuthenticating] = useState(true);
 
   useEffect(() => {
-    fetchSubmissions();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/auth/verify');
+      const data = await response.json();
+      
+      if (data.authenticated) {
+        setUser(data.user);
+        setAuthenticating(false);
+        fetchSubmissions();
+      } else {
+        router.push('/login');
+      }
+    } catch (err) {
+      router.push('/login');
+    }
+  };
 
   const fetchSubmissions = async () => {
     try {
@@ -41,27 +68,53 @@ export default function AdminPage() {
     window.location.href = '/api/export?format=csv';
   };
 
-  if (loading) {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
+  if (authenticating || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#005c65]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-900">Form Submissions</h1>
-            <button
-              onClick={exportCSV}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Export to CSV
-            </button>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600">
+                  Welcome, {user?.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-800">Form Submissions</h2>
+              <button
+                onClick={exportCSV}
+                className="bg-[#005c65] text-white px-4 py-2 rounded-lg hover:bg-[#004a52] transition-colors"
+              >
+                Export to CSV
+              </button>
+            </div>
           
           {error && (
             <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
@@ -139,10 +192,11 @@ export default function AdminPage() {
                     {JSON.stringify(submission.data, null, 2)}
                   </pre>
                 </details>
-              </motion.div>
+                </motion.div>
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

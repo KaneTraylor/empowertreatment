@@ -2,19 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import twilio from 'twilio';
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Validate environment variables
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Initialize Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Check if all required environment variables are present
+const hasAllEnvVars = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY;
+
+// Initialize services only if we have all environment variables
+const twilioClient = hasAllEnvVars ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) : null;
+const supabase = hasAllEnvVars ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) : null;
 
 export async function GET(request: NextRequest) {
+  // Check if environment variables are configured
+  if (!hasAllEnvVars) {
+    console.warn('Missing environment variables for pass approval');
+    return new NextResponse('Service temporarily unavailable', { status: 503 });
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const passId = searchParams.get('id');
   const action = searchParams.get('action');
@@ -26,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Get pass details
-    const { data: passData, error: fetchError } = await supabase
+    const { data: passData, error: fetchError } = await supabase!
       .from('weekend_passes')
       .select('*')
       .eq('pass_id', passId)
@@ -45,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     // Update pass status
     const newStatus = action === 'approve' ? 'approved' : 'denied';
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabase!
       .from('weekend_passes')
       .update({
         status: newStatus,
@@ -71,7 +78,7 @@ export async function GET(request: NextRequest) {
       : `Your weekend pass request (${passId}) has been DENIED. Please speak with staff if you have questions.`;
 
     try {
-      await twilioClient.messages.create({
+      await twilioClient!.messages.create({
         body: message,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: `+1${passData.phone.replace(/\D/g, '')}`

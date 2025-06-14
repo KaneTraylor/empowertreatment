@@ -192,7 +192,7 @@ export default function WeekendPassPage() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Request Submitted!</h2>
             <p className="text-gray-600 mb-6">
               Your weekend pass request has been sent to staff for approval. 
-              You'll receive a text message once it's been reviewed.
+              You&apos;ll receive a text message once it&apos;s been reviewed.
             </p>
             <p className="text-sm text-gray-500">
               Typical response time: 2-4 hours during business hours

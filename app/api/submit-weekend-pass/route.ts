@@ -3,23 +3,35 @@ import twilio from 'twilio';
 import sgMail from '@sendgrid/mail';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Validate environment variables
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+// Check if all required environment variables are present
+const hasAllEnvVars = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && SENDGRID_API_KEY && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY;
 
-// Initialize Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize services only if we have all environment variables
+const twilioClient = hasAllEnvVars ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) : null;
+const supabase = hasAllEnvVars ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) : null;
+
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if environment variables are configured
+    if (!hasAllEnvVars) {
+      console.warn('Missing environment variables for weekend pass submission');
+      return NextResponse.json({
+        success: false,
+        message: 'Service temporarily unavailable'
+      }, { status: 503 });
+    }
+
     const data = await request.json();
 
     // Generate unique pass ID
@@ -30,7 +42,7 @@ export async function POST(request: NextRequest) {
     const returnDateTime = new Date(`${data.returnDate} ${data.returnTime}`);
     
     // Store in Supabase
-    const { error: dbError } = await supabase
+    const { error: dbError } = await supabase!
       .from('weekend_passes')
       .insert({
         pass_id: passId,
@@ -79,7 +91,7 @@ Review and approve: ${approvalLink}`;
 
     // Send to both staff members
     const smsPromises = [kelseyPhone, kaleePhone].map(phone => 
-      twilioClient.messages.create({
+      twilioClient!.messages.create({
         body: smsMessage,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: `+1${phone.replace(/\D/g, '')}`
@@ -218,7 +230,7 @@ Review and approve: ${approvalLink}`;
 
     // Send confirmation SMS to resident
     try {
-      await twilioClient.messages.create({
+      await twilioClient!.messages.create({
         body: `Your weekend pass request has been submitted and is pending approval. You'll receive a text when it's been reviewed. Pass ID: ${passId}`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: `+1${data.phone.replace(/\D/g, '')}`
