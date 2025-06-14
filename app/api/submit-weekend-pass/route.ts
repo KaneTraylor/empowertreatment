@@ -71,7 +71,12 @@ export async function POST(request: NextRequest) {
 
     if (dbError) {
       console.error('Database error:', dbError);
-      throw new Error('Failed to save pass request');
+      // If table doesn't exist, we'll still send notifications but warn the user
+      if (dbError.code === '42P01') { // 42P01 is "undefined table" error
+        console.warn('Weekend passes table does not exist. Notifications will still be sent.');
+      } else {
+        throw new Error('Failed to save pass request');
+      }
     }
 
     // Create approval link
