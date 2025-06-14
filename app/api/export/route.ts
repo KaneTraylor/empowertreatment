@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSubmissions, exportToCSV } from '@/lib/fileStorage';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 // GET submissions as JSON or CSV
 export async function GET(request: NextRequest) {
   try {
