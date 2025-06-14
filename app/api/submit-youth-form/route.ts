@@ -310,7 +310,7 @@ export async function POST(request: NextRequest) {
     // Send email to internal team
     const msg = {
       to: recipients,
-      from: requiredEnvVars.SENDGRID_FROM_EMAIL,
+      from: requiredEnvVars.SENDGRID_FROM_EMAIL as string,
       subject: `Youth Services Inquiry - ${data.youthName} (${data.formType === 'group-home' ? 'Group Home' : 'Parent'})`,
       text: `New youth services inquiry received from ${data.contactName}`,
       html: htmlContent,
@@ -334,7 +334,7 @@ export async function POST(request: NextRequest) {
           try {
             await twilioClient.messages.create({
               body: `New Youth Services ${data.formType === 'group-home' ? 'Group Home' : 'Parent'} Inquiry\n\nYouth: ${data.youthName}, Age ${data.youthAge}\nContact: ${data.contactName}\n${data.urgencyLevel === 'immediate' ? '🚨 URGENT - Crisis Situation' : 'Priority: ' + (data.urgencyLevel === 'soon' ? 'Soon' : 'Planning')}\n\nCheck email for full details.`,
-              from: requiredEnvVars.TWILIO_PHONE_NUMBER,
+              from: requiredEnvVars.TWILIO_PHONE_NUMBER!,
               to: phone
             });
           } catch (smsError) {
@@ -362,7 +362,7 @@ export async function POST(request: NextRequest) {
 
         await twilioClient.messages.create({
           body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${data.youthName} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0016.`,
-          from: requiredEnvVars.TWILIO_PHONE_NUMBER,
+          from: requiredEnvVars.TWILIO_PHONE_NUMBER!,
           to: formattedPhone
         });
       } catch (smsError) {
@@ -375,7 +375,7 @@ export async function POST(request: NextRequest) {
     if (data.email) {
       const confirmationMsg = {
         to: data.email,
-        from: requiredEnvVars.SENDGRID_FROM_EMAIL,
+        from: requiredEnvVars.SENDGRID_FROM_EMAIL as string,
         subject: 'Empower Treatment - Youth Services Inquiry Received',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
