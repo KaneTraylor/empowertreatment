@@ -30,7 +30,7 @@ export function CheckboxGroup({
   required,
 }: CheckboxGroupProps) {
   // Support both 'value' and 'values' props
-  const selectedValues = value || values || [];
+  const selectedValues = values || value || [];
   
   const handleChange = (optionValue: string, checked: boolean) => {
     if (checked) {
@@ -59,7 +59,7 @@ export function CheckboxGroup({
             value={option.value}
             checked={selectedValues.includes(option.value)}
             onChange={(e) => handleChange(option.value, e.target.checked)}
-            className="w-5 h-5 mt-0.5 text-primary border-gray-300 rounded focus:ring-primary"
+            className="w-5 h-5 mt-0.5 text-[#005c65] accent-[#005c65] border-gray-300 rounded focus:ring-[#005c65] focus:ring-2 cursor-pointer"
           />
           <span className="text-gray-700 select-none">{option.label}</span>
         </label>
