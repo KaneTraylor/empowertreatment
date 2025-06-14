@@ -268,12 +268,12 @@ Review and approve: ${approvalLink}`;
       try {
         await sgMail.sendMultiple(emailContent);
         console.log('Email sent successfully to:', emailContent.to);
-      } catch (emailError) {
+      } catch (emailError: any) {
         console.error('Email error:', emailError);
         console.error('Email error details:', {
-          message: emailError.message,
-          code: emailError.code,
-          response: emailError.response?.body
+          message: emailError?.message || 'Unknown error',
+          code: emailError?.code || 'Unknown code',
+          response: emailError?.response?.body || 'No response body'
         });
       }
     } else {
