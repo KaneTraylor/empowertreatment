@@ -95,16 +95,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Fallback to local storage
-    try {
-      const localPasses = await getWeekendPasses();
-      console.log('Fetched from local storage:', localPasses.length, 'passes');
-      return NextResponse.json({ passes: localPasses });
-    } catch (localError) {
-      console.error('Error fetching from local storage:', localError);
-      // Return empty array if both fail
-      return NextResponse.json({ passes: [] });
-    }
+    // If Supabase is not configured or failed, return empty array
+    console.warn('Supabase not configured or failed, returning empty passes array');
+    return NextResponse.json({ passes: [] });
   } catch (error) {
     console.error('Error in weekend passes API:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -158,22 +151,9 @@ export async function POST(request: NextRequest) {
       console.error('Error updating in Supabase:', error);
     }
 
-    // Fallback to local storage
-    try {
-      const updatedPass = await updatePassStatus(passId, newStatus as 'approved' | 'denied', user);
-      if (updatedPass) {
-        console.log('Updated pass in local storage:', passId);
-        return NextResponse.json({ 
-          success: true, 
-          message: `Pass ${action}d successfully` 
-        });
-      } else {
-        return NextResponse.json({ error: 'Pass not found' }, { status: 404 });
-      }
-    } catch (localError) {
-      console.error('Error updating in local storage:', localError);
-      return NextResponse.json({ error: 'Failed to update pass' }, { status: 500 });
-    }
+    // If Supabase is not configured or failed, return error
+    console.error('Failed to update pass - Supabase not configured or error occurred');
+    return NextResponse.json({ error: 'Failed to update pass' }, { status: 500 });
 
   } catch (error) {
     console.error('Error updating weekend pass:', error);

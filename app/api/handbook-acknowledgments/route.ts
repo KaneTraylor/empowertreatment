@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
-import { getHandbookAcknowledgments } from '@/lib/handbookStorage';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -24,14 +23,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Fetch handbook acknowledgments from local storage
-    console.log('Fetching handbook acknowledgments...');
-    const acknowledgments = await getHandbookAcknowledgments();
-    console.log(`Found ${acknowledgments.length} handbook acknowledgments`);
+    // Note: Handbook acknowledgments are not stored in Supabase yet
+    // For now, return empty array to prevent errors in production
+    console.log('Handbook acknowledgments feature not yet implemented in database');
 
     return NextResponse.json({ 
-      acknowledgments,
-      count: acknowledgments.length 
+      acknowledgments: [],
+      count: 0 
     });
 
   } catch (error) {

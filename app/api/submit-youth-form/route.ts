@@ -342,7 +342,14 @@ export async function POST(request: NextRequest) {
       html: htmlContent,
     };
 
-    await sgMail.send(msg);
+    // Use sendMultiple when sending to multiple recipients
+    if (recipients.length > 1) {
+      await sgMail.sendMultiple(msg);
+      console.log(`Youth services notification emails sent successfully to ${recipients.length} recipients`);
+    } else {
+      await sgMail.send(msg);
+      console.log('Youth services notification email sent successfully');
+    }
 
     // Send SMS notifications to clinicians
     const clinicianPhones = [
@@ -469,8 +476,13 @@ export async function POST(request: NextRequest) {
       message: 'Youth services inquiry submitted successfully' 
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error submitting youth form:', error);
+    console.error('Error details:', {
+      message: error?.message || 'Unknown error',
+      code: error?.code || 'Unknown code',
+      response: error?.response?.body || 'No response body'
+    });
     return NextResponse.json(
       { 
         success: false, 

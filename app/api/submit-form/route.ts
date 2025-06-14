@@ -187,27 +187,17 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         console.error('Supabase error:', error);
-        // Try file storage as fallback
-        try {
-          const fileSubmission = await saveSubmission(data);
-          submissionId = fileSubmission.id;
-          console.log('Form saved to file storage with ID:', submissionId);
-        } catch (fileError) {
-          console.error('File storage error:', fileError);
-        }
+        // Generate a temporary ID for the submission
+        submissionId = `TEMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        console.log('Supabase save failed, using temporary ID:', submissionId);
       } else {
         submissionId = submission?.id;
         console.log('Form saved to database with ID:', submissionId);
       }
     } else {
-      // No Supabase configured, use file storage
-      try {
-        const fileSubmission = await saveSubmission(data);
-        submissionId = fileSubmission.id;
-        console.log('Form saved to file storage with ID:', submissionId);
-      } catch (fileError) {
-        console.error('File storage error:', fileError);
-      }
+      // No Supabase configured, generate temporary ID
+      submissionId = `TEMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      console.warn('No Supabase configured - form data will only be sent via email');
     }
 
     // Format the email content
@@ -527,6 +517,9 @@ export async function POST(request: NextRequest) {
     if (recipients.length === 0) {
       recipients.push(process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com');
     }
+    
+    console.log('Email recipients:', recipients);
+    console.log('SendGrid configured:', !!process.env.SENDGRID_API_KEY, 'From email:', process.env.SENDGRID_FROM_EMAIL);
 
     // Send email to internal team
     const msg = {
@@ -540,14 +533,38 @@ export async function POST(request: NextRequest) {
     // Send email to clinicians
     if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
       try {
-        await sgMail.send(msg);
-        console.log('Clinician notification email sent successfully');
-      } catch (emailError) {
+        console.log('Attempting to send email to clinicians:', {
+          recipients: recipients,
+          from: process.env.SENDGRID_FROM_EMAIL,
+          recipientCount: recipients.length
+        });
+        
+        // Use sendMultiple when sending to multiple recipients
+        if (recipients.length > 1) {
+          await sgMail.sendMultiple(msg);
+          console.log(`Clinician notification emails sent successfully to ${recipients.length} recipients`);
+        } else {
+          await sgMail.send(msg);
+          console.log('Clinician notification email sent successfully');
+        }
+      } catch (emailError: any) {
         console.error('Failed to send clinician email:', emailError);
+        console.error('Email error details:', {
+          message: emailError?.message || 'Unknown error',
+          code: emailError?.code || 'Unknown code',
+          response: emailError?.response?.body || 'No response body',
+          statusCode: emailError?.response?.statusCode || 'No status code',
+          recipients: recipients,
+          sendGridConfigured: !!process.env.SENDGRID_API_KEY,
+          fromEmail: process.env.SENDGRID_FROM_EMAIL
+        });
         // Don't fail the entire submission if email fails
       }
     } else {
-      console.warn('SendGrid not configured - clinician email not sent');
+      console.warn('SendGrid not configured - clinician email not sent', {
+        hasApiKey: !!process.env.SENDGRID_API_KEY,
+        hasFromEmail: !!process.env.SENDGRID_FROM_EMAIL
+      });
     }
 
     // Send SMS notifications if appointment is scheduled
