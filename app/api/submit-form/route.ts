@@ -127,6 +127,14 @@ function formatFrequency(value: string | undefined): string {
 
 export async function POST(request: NextRequest) {
   console.log('Submit form API called');
+  console.log('Environment check:', {
+    hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasSupabaseServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    hasSendGridKey: !!process.env.SENDGRID_API_KEY,
+    hasSendGridFrom: !!process.env.SENDGRID_FROM_EMAIL,
+    supabaseAdminCreated: !!supabaseAdmin
+  });
+  
   try {
     const data: FormData = await request.json();
     console.log('Received form data with fields:', Object.keys(data));
@@ -179,6 +187,7 @@ export async function POST(request: NextRequest) {
         status: 'pending'
       };
 
+      console.log('Attempting to save to Supabase...');
       const { data: submission, error } = await supabaseAdmin
         .from('form_submissions')
         .insert(dbData)
@@ -187,12 +196,19 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         console.error('Supabase error:', error);
+        console.error('Supabase error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
         // Generate a temporary ID for the submission
         submissionId = `TEMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         console.log('Supabase save failed, using temporary ID:', submissionId);
       } else {
         submissionId = submission?.id;
         console.log('Form saved to database with ID:', submissionId);
+        console.log('Saved submission:', submission);
       }
     } else {
       // No Supabase configured, generate temporary ID
