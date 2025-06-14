@@ -41,11 +41,19 @@ interface WeekendPass {
   created_at: string;
 }
 
+interface HandbookAcknowledgment {
+  id: string;
+  resident_name: string;
+  signature_date: string;
+  created_at: string;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [weekendPasses, setWeekendPasses] = useState<WeekendPass[]>([]);
-  const [activeTab, setActiveTab] = useState<'submissions' | 'weekend-passes'>('submissions');
+  const [handbookAcknowledgments, setHandbookAcknowledgments] = useState<HandbookAcknowledgment[]>([]);
+  const [activeTab, setActiveTab] = useState<'submissions' | 'weekend-passes' | 'handbook-acknowledgments'>('submissions');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -61,6 +69,7 @@ export default function AdminPage() {
         setAuthenticating(false);
         fetchSubmissions();
         fetchWeekendPasses();
+        fetchHandbookAcknowledgments();
       } else {
         router.push('/login');
       }
@@ -120,6 +129,28 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Error loading weekend passes:', err);
+    }
+  };
+
+  const fetchHandbookAcknowledgments = async () => {
+    try {
+      const response = await fetch('/api/handbook-acknowledgments');
+      console.log('Handbook acknowledgments API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Handbook acknowledgments API error:', errorText);
+        return;
+      }
+      
+      const result = await response.json();
+      console.log('Handbook acknowledgments result:', result);
+      
+      if (result.acknowledgments) {
+        setHandbookAcknowledgments(result.acknowledgments);
+      }
+    } catch (err) {
+      console.error('Error loading handbook acknowledgments:', err);
     }
   };
 
@@ -210,6 +241,16 @@ export default function AdminPage() {
                   }`}
                 >
                   Weekend Passes
+                </button>
+                <button
+                  onClick={() => setActiveTab('handbook-acknowledgments')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === 'handbook-acknowledgments'
+                      ? 'border-[#005c65] text-[#005c65]'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Handbook Acknowledgments
                 </button>
               </nav>
             </div>
@@ -441,6 +482,91 @@ ${pass.approved_at ? `Approved at: ${new Date(pass.approved_at).toLocaleString()
                               View Details
                             </button>
                           )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Handbook Acknowledgments Tab */}
+        {activeTab === 'handbook-acknowledgments' && (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Housing Handbook Acknowledgments</h2>
+            
+            {handbookAcknowledgments.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">
+                No handbook acknowledgments yet.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Resident Name
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Signature Date
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Submitted At
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {handbookAcknowledgments.map((acknowledgment) => (
+                      <tr key={acknowledgment.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {acknowledgment.resident_name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {new Date(acknowledgment.signature_date).toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(acknowledgment.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => {
+                              const details = `
+Housing Handbook Acknowledgment
+
+Resident: ${acknowledgment.resident_name}
+Signature Date: ${new Date(acknowledgment.signature_date).toLocaleDateString()}
+Submitted: ${new Date(acknowledgment.created_at).toLocaleString()}
+
+This resident has acknowledged that they have read and understood all sections of the Recovery Housing Resident Handbook, including:
+- Program values, mission, and vision
+- Resident rights and grievance policies
+- Rules and responsibilities
+- Emergency protocols
+- Code of ethics
+- Good neighbor policy
+- All other handbook sections
+
+They have provided their digital signature confirming they agree to abide by all articles of the resident handbook.`;
+                              alert(details);
+                            }}
+                            className="text-[#005c65] hover:text-[#004a52]"
+                          >
+                            View Details
+                          </button>
                         </td>
                       </tr>
                     ))}
