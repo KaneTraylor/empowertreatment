@@ -26,11 +26,11 @@ export function CrisisHotline() {
               <span className="font-medium">Need immediate help?</span>
             </div>
             <a 
-              href="tel:+17402000016" 
+              href="tel:+17402000277" 
               className="font-bold hover:underline flex items-center space-x-1"
             >
               <span>Call us 24/7:</span>
-              <span className="text-lg">(740) 200-0016</span>
+              <span className="text-lg">(740) 200-0277</span>
             </a>
           </div>
           <button

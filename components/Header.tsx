@@ -52,10 +52,10 @@ export function Header() {
               Verify Insurance
             </Link>
             <span className={isScrolled ? 'text-gray-400' : 'text-white/50'}>|</span>
-            <Link href="tel:740-200-0016" className={`transition-colors ${
+            <Link href="tel:740-200-0277" className={`transition-colors ${
               isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white hover:text-white/80'
             }`}>
-              (740) 200-0016
+              (740) 200-0277
             </Link>
             <span className={isScrolled ? 'text-gray-400' : 'text-white/50'}>|</span>
             <Link href="mailto:support@empowertreatment.com" className={`transition-colors ${
@@ -122,11 +122,11 @@ export function Header() {
               Verify Insurance
             </Link>
             <Link 
-              href="tel:740-200-0016" 
+              href="tel:740-200-0277" 
               className="text-lg text-gray-900 hover:text-[#005c65] transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              (740) 200-0016
+              (740) 200-0277
             </Link>
             <Link 
               href="mailto:support@empowertreatment.com" 

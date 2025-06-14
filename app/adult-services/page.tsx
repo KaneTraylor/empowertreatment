@@ -76,10 +76,10 @@ export default function AdultServices() {
               Start Your Assessment
             </Link>
             <a
-              href="tel:740-200-0016"
+              href="tel:740-200-0277"
               className="inline-flex items-center justify-center bg-transparent border-2 border-white text-white rounded-full px-8 py-4 text-lg font-medium hover:bg-white hover:text-[#005c65] transition-all duration-200"
             >
-              Call (740) 200-0016
+              Call (740) 200-0277
             </a>
           </div>
         </motion.div>
@@ -219,7 +219,7 @@ export default function AdultServices() {
                         Verify Coverage
                       </Link>
                       <a
-                        href="tel:740-200-0016"
+                        href="tel:740-200-0277"
                         className="inline-flex items-center justify-center bg-transparent border-2 border-[#005c65] text-[#005c65] rounded-full px-6 py-3 text-sm font-medium hover:bg-[#005c65] hover:text-white transition-colors"
                       >
                         Call for Questions
@@ -1102,10 +1102,10 @@ export default function AdultServices() {
                 Start Your Assessment
               </Link>
               <a
-                href="tel:740-200-0016"
+                href="tel:740-200-0277"
                 className="inline-flex items-center justify-center bg-transparent border-2 border-white text-white rounded-full h-[3.5rem] md:h-[4rem] px-10 md:px-12 text-lg md:text-xl font-light transition-all duration-200 hover:bg-white hover:text-[#005c65]"
               >
-                Call Now: (740) 200-0016
+                Call Now: (740) 200-0277
               </a>
             </div>
             
@@ -1203,7 +1203,7 @@ export default function AdultServices() {
                     </svg>
                     <div>
                       <p className="text-white font-semibold">24/7 Support</p>
-                      <p className="text-gray-400">(740) 200-0016</p>
+                      <p className="text-gray-400">(740) 200-0277</p>
                     </div>
                   </div>
                   

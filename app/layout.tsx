@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { TreatmentCenterSchema, FAQSchema } from "@/components/StructuredData";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
@@ -110,6 +111,7 @@ export default function RootLayout({
       </head>
       <body className={`${lineSeedSans.variable} ${lineSeedSans.className}`}>
         <SmoothScrollProvider>
+          <ScrollToTop />
           {children}
         </SmoothScrollProvider>
         {/* Tidio Live Chat */}

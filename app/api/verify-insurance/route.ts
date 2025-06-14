@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
                     </div>
                     
                     <p style="margin: 20px 0; color: #1f2937; font-size: 16px; line-height: 1.5;">
-                      If you have any questions or need immediate assistance, please don't hesitate to call us at <strong>(740) 200-0016</strong>.
+                      If you have any questions or need immediate assistance, please don't hesitate to call us at <strong>(740) 200-0277</strong>.
                     </p>
                     
                     <p style="margin: 20px 0 0 0; color: #1f2937; font-size: 16px; line-height: 1.5;">
@@ -244,7 +244,7 @@ export async function POST(request: NextRequest) {
                 <tr>
                   <td style="background-color: #f9fafb; padding: 20px 40px; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb;">
                     <p style="margin: 0; color: #6b7280; font-size: 12px; text-align: center;">
-                      Empower Treatment | (740) 200-0016 | empowertreatment.com
+                      Empower Treatment | (740) 200-0277 | empowertreatment.com
                     </p>
                   </td>
                 </tr>

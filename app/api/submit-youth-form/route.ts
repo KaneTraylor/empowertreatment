@@ -382,7 +382,7 @@ export async function POST(request: NextRequest) {
         }
 
         await twilioClient.messages.create({
-          body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${data.youthName} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0016.`,
+          body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${data.youthName} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0277.`,
           from: requiredEnvVars.TWILIO_PHONE_NUMBER!,
           to: formattedPhone
         });
@@ -427,12 +427,12 @@ export async function POST(request: NextRequest) {
               </ul>
               
               ${data.urgencyLevel === 'immediate' ? 
-                `<p style="color: #dc2626; font-weight: 600;">We understand this is an urgent situation. If you need immediate assistance, please call us at (740) 200-0016.</p>` : 
+                `<p style="color: #dc2626; font-weight: 600;">We understand this is an urgent situation. If you need immediate assistance, please call us at (740) 200-0277.</p>` : 
                 ''}
               
               <p>If you have any immediate questions, please don't hesitate to reach out:</p>
               <ul>
-                <li>Phone: (740) 200-0016</li>
+                <li>Phone: (740) 200-0277</li>
                 <li>Email: support@empowertreatment.com</li>
               </ul>
               

@@ -1195,12 +1195,12 @@ export default function Home() {
               <div>
                 <h4 className="text-lg font-semibold mb-4">Services</h4>
                 <ul className="space-y-3">
-                  <li><a href="/adult-services" className="text-gray-400 hover:text-white transition-colors">Adult Services</a></li>
-                  <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Group Counseling</a></li>
-                  <li><a href="/youth-services" className="text-gray-400 hover:text-white transition-colors">Teen & Youth Services</a></li>
-                  <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Telehealth</a></li>
-                  <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Medication Management</a></li>
-                  <li><a href="/insurance-verification" className="text-gray-400 hover:text-white transition-colors">Insurance Verification</a></li>
+                  <li><Link href="/adult-services" className="text-gray-400 hover:text-white transition-colors">Adult Services</Link></li>
+                  <li><Link href="/welcome" className="text-gray-400 hover:text-white transition-colors">Group Counseling</Link></li>
+                  <li><Link href="/youth-services" className="text-gray-400 hover:text-white transition-colors">Teen & Youth Services</Link></li>
+                  <li><Link href="/welcome" className="text-gray-400 hover:text-white transition-colors">Telehealth</Link></li>
+                  <li><Link href="/welcome" className="text-gray-400 hover:text-white transition-colors">Medication Management</Link></li>
+                  <li><Link href="/insurance-verification" className="text-gray-400 hover:text-white transition-colors">Insurance Verification</Link></li>
                 </ul>
               </div>
               

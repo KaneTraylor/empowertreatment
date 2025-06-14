@@ -276,7 +276,7 @@ export async function POST(request: NextRequest) {
                       </p>
                       <p class="help-text">
                         Having trouble? Our support team is available 24/7 at 
-                        <a href="tel:740-200-0016" style="color: #005c65; text-decoration: none; font-weight: 500;">(740) 200-0016</a>
+                        <a href="tel:740-200-0277" style="color: #005c65; text-decoration: none; font-weight: 500;">(740) 200-0277</a>
                       </p>
                     </div>
                   </div>
@@ -284,7 +284,7 @@ export async function POST(request: NextRequest) {
                   <div class="footer">
                     <div class="contact-info">
                       <span class="contact-item">
-                        📞 <a href="tel:740-200-0016">(740) 200-0016</a>
+                        📞 <a href="tel:740-200-0277">(740) 200-0277</a>
                       </span>
                       <span class="contact-item">
                         ✉️ <a href="mailto:support@empowertreatment.com">support@empowertreatment.com</a>

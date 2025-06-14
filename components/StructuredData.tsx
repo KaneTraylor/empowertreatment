@@ -5,7 +5,7 @@ export function TreatmentCenterSchema() {
     "name": "Empower Treatment",
     "description": "Comprehensive outpatient mental health and addiction treatment center in Ohio",
     "url": "https://empowertreatment.com",
-    "telephone": "+17402000016",
+    "telephone": "+17402000277",
     "email": "info@empowertreatment.com",
     "address": {
       "@type": "PostalAddress",

@@ -19,6 +19,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       infinite: false,
     });
 
+    // Make lenis globally available for other components
+    (window as any).lenis = lenis;
+
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -28,6 +31,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
     // Clean up
     return () => {
+      delete (window as any).lenis;
       lenis.destroy();
     };
   }, []);
