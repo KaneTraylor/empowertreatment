@@ -1,0 +1,24 @@
+{
+  "name": "Empower Treatment - Mental Health & Addiction Care",
+  "short_name": "Empower Treatment",
+  "description": "Comprehensive outpatient mental health and addiction treatment in Ohio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ef3d3d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon-et.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-et.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["medical", "health", "lifestyle"],
+  "lang": "en-US"
+}

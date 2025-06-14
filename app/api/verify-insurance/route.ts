@@ -258,9 +258,9 @@ export async function POST(request: NextRequest) {
       html: patientEmailContent,
     });
 
-    // Mock response for demo purposes
-    const acceptedProviders = ['aetna', 'anthem-bcbs', 'bcbs', 'cigna', 'united', 'medicaid', 'medicare'];
-    const isAccepted = acceptedProviders.includes(data.insuranceProvider);
+    // All providers listed in the form are in-network
+    const inNetworkProviders = ['aetna', 'anthem-bcbs', 'bcbs', 'cigna', 'humana', 'kaiser', 'medicaid', 'medicare', 'united', 'wellcare'];
+    const isAccepted = inNetworkProviders.includes(data.insuranceProvider) || data.insuranceProvider === 'other';
 
     return NextResponse.json({
       success: true,
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
       mockResult: {
         isAccepted,
         coverageDetails: isAccepted ? {
-          inNetwork: data.insuranceProvider !== 'medicaid' && data.insuranceProvider !== 'medicare',
+          inNetwork: true, // All listed providers are in-network
           estimatedCoverage: data.insuranceProvider === 'medicaid' || data.insuranceProvider === 'medicare' ? '100%' : '80-90%',
           deductible: data.insuranceProvider === 'medicaid' || data.insuranceProvider === 'medicare' ? '$0' : '$500-$1,500',
           outOfPocket: data.insuranceProvider === 'medicaid' || data.insuranceProvider === 'medicare' ? '$0' : '$2,000-$5,000',
