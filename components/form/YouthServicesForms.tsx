@@ -122,10 +122,22 @@ export function YouthServicesForms() {
   ];
 
   const handleSubmit = async (formType: 'group-home' | 'parent') => {
+    console.log('Starting youth form submission:', formType);
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
     const data = formType === 'group-home' ? groupHomeData : parentData;
+    console.log('Form data:', data);
+
+    // Validate required fields
+    if (formType === 'group-home') {
+      if (!data.youthName && data.referralType === 'individual') {
+        console.error('Youth name required for individual referral');
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     try {
       const response = await fetch('/api/submit-youth-form', {
@@ -139,7 +151,12 @@ export function YouthServicesForms() {
         }),
       });
 
-      if (response.ok) {
+      console.log('Response status:', response.status);
+      const result = await response.json();
+      console.log('Response data:', result);
+
+      if (response.ok && result.success) {
+        console.log('Form submitted successfully');
         setSubmitStatus('success');
         // Reset form
         if (formType === 'group-home') {
@@ -186,6 +203,7 @@ export function YouthServicesForms() {
           setSubmitStatus('idle');
         }, 5000);
       } else {
+        console.error('Form submission failed:', result.message || 'Unknown error');
         setSubmitStatus('error');
       }
     } catch (error) {
@@ -787,7 +805,7 @@ export function YouthServicesForms() {
               <h3 className="text-2xl font-semibold text-gray-900 mb-4">Thank You!</h3>
               <p className="text-lg text-gray-600 mb-6">
                 Your inquiry has been received. Our youth services team will contact you within 
-                {activeForm === 'group-home' && groupHomeData.urgencyLevel === 'immediate' ? ' 24 hours' : ' 24-48 hours'}.
+                {activeForm === 'group-home' ? (groupHomeData.urgencyLevel === 'immediate' ? ' 24 hours' : ' 24-48 hours') : (parentData.urgencyLevel === 'immediate' ? ' 24 hours' : ' 24-48 hours')}.
               </p>
               <p className="text-gray-600">
                 If you need immediate assistance, please call us at{' '}

@@ -10,12 +10,9 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Check if all required environment variables are present
-const hasAllEnvVars = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && SENDGRID_API_KEY && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY;
-
-// Initialize services only if we have all environment variables
-const twilioClient = hasAllEnvVars ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) : null;
-const supabase = hasAllEnvVars ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) : null;
+// Initialize services only if credentials exist
+const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) : null;
+const supabase = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) : null;
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
@@ -23,13 +20,13 @@ if (SENDGRID_API_KEY) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if environment variables are configured
-    if (!hasAllEnvVars) {
-      console.warn('Missing environment variables for weekend pass submission');
-      return NextResponse.json({
-        success: false,
-        message: 'Service temporarily unavailable'
-      }, { status: 503 });
+    // Log warning if some services are not configured
+    if (!twilioClient || !supabase || !SENDGRID_API_KEY) {
+      console.warn('Some services not configured:', {
+        twilio: !!twilioClient,
+        supabase: !!supabase,
+        sendgrid: !!SENDGRID_API_KEY
+      });
     }
 
     const data = await request.json();
@@ -41,10 +38,11 @@ export async function POST(request: NextRequest) {
     const departureDateTime = new Date(`${data.departureDate} ${data.departureTime}`);
     const returnDateTime = new Date(`${data.returnDate} ${data.returnTime}`);
     
-    // Store in Supabase
-    const { error: dbError } = await supabase!
-      .from('weekend_passes')
-      .insert({
+    // Store in Supabase if available
+    if (supabase) {
+      const { error: dbError } = await supabase
+        .from('weekend_passes')
+        .insert({
         pass_id: passId,
         resident_name: data.residentName,
         room_number: data.roomNumber,
@@ -67,16 +65,19 @@ export async function POST(request: NextRequest) {
         signature_date: data.signatureDate,
         status: 'pending',
         created_at: new Date().toISOString()
-      });
+        });
 
-    if (dbError) {
-      console.error('Database error:', dbError);
-      // If table doesn't exist, we'll still send notifications but warn the user
-      if (dbError.code === '42P01') { // 42P01 is "undefined table" error
-        console.warn('Weekend passes table does not exist. Notifications will still be sent.');
-      } else {
-        throw new Error('Failed to save pass request');
+      if (dbError) {
+        console.error('Database error:', dbError);
+        // If table doesn't exist, we'll still send notifications but warn the user
+        if (dbError.code === '42P01') { // 42P01 is "undefined table" error
+          console.warn('Weekend passes table does not exist. Notifications will still be sent.');
+        } else {
+          console.error('Failed to save pass request:', dbError);
+        }
       }
+    } else {
+      console.warn('Supabase not configured - pass data will not be stored');
     }
 
     // Create approval link
@@ -94,22 +95,27 @@ Destination: ${data.destination}
 
 Review and approve: ${approvalLink}`;
 
-    // Send to both staff members
-    const smsPromises = [kelseyPhone, kaleePhone].map(phone => 
-      twilioClient!.messages.create({
-        body: smsMessage,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: `+1${phone.replace(/\D/g, '')}`
-      }).catch(err => {
-        console.error(`Failed to send SMS to ${phone}:`, err);
-        return null;
-      })
-    );
+    // Send to both staff members if Twilio is configured
+    if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
+      const smsPromises = [kelseyPhone, kaleePhone].map(phone => 
+        twilioClient.messages.create({
+          body: smsMessage,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: `+1${phone.replace(/\D/g, '')}`
+        }).catch(err => {
+          console.error(`Failed to send SMS to ${phone}:`, err);
+          return null;
+        })
+      );
 
-    await Promise.all(smsPromises);
+      await Promise.all(smsPromises);
+    } else {
+      console.warn('Twilio not configured - SMS notifications will not be sent');
+    }
 
-    // Send detailed email
-    const emailContent = {
+    // Send detailed email if SendGrid is configured
+    if (SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+      const emailContent = {
       to: ['kelsey@empowertreatment.com', 'kalee@empowertreatment.com'],
       from: process.env.SENDGRID_FROM_EMAIL!,
       subject: `Weekend Pass Request - ${data.residentName}`,
@@ -227,21 +233,26 @@ Review and approve: ${approvalLink}`;
       `
     };
 
-    try {
-      await sgMail.sendMultiple(emailContent);
-    } catch (emailError) {
-      console.error('Email error:', emailError);
+      try {
+        await sgMail.sendMultiple(emailContent);
+      } catch (emailError) {
+        console.error('Email error:', emailError);
+      }
+    } else {
+      console.warn('SendGrid not configured - email notifications will not be sent');
     }
 
-    // Send confirmation SMS to resident
-    try {
-      await twilioClient!.messages.create({
-        body: `Your weekend pass request has been submitted and is pending approval. You'll receive a text when it's been reviewed. Pass ID: ${passId}`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: `+1${data.phone.replace(/\D/g, '')}`
-      });
-    } catch (residentSmsError) {
-      console.error('Failed to send confirmation SMS to resident:', residentSmsError);
+    // Send confirmation SMS to resident if Twilio is configured
+    if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
+      try {
+        await twilioClient.messages.create({
+          body: `Your weekend pass request has been submitted and is pending approval. You'll receive a text when it's been reviewed. Pass ID: ${passId}`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: `+1${data.phone.replace(/\D/g, '')}`
+        });
+      } catch (residentSmsError) {
+        console.error('Failed to send confirmation SMS to resident:', residentSmsError);
+      }
     }
 
     return NextResponse.json({ 
@@ -258,3 +269,6 @@ Review and approve: ${approvalLink}`;
     );
   }
 }
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';

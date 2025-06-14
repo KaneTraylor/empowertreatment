@@ -329,10 +329,15 @@ export async function POST(request: NextRequest) {
     ];
 
     // Send email to internal team
+    const subjectName = data.youthName || 
+      (data.referralType === 'multiple' ? `${data.numberOfYouth} Youth` : 
+       data.referralType === 'entire-house' ? `Entire Facility (${data.numberOfYouth} Residents)` : 
+       'Youth Services Inquiry');
+    
     const msg = {
       to: recipients,
       from: requiredEnvVars.SENDGRID_FROM_EMAIL as string,
-      subject: `Youth Services Inquiry - ${data.youthName} (${data.formType === 'group-home' ? 'Group Home' : 'Parent'})`,
+      subject: `Youth Services Inquiry - ${subjectName} (${data.formType === 'group-home' ? 'Group Home' : 'Parent'})`,
       text: `New youth services inquiry received from ${data.contactName}`,
       html: htmlContent,
     };
@@ -353,8 +358,14 @@ export async function POST(request: NextRequest) {
       for (const phone of clinicianPhones) {
         if (phone) {
           try {
+            const youthInfo = data.youthName ? 
+              `Youth: ${data.youthName}${data.youthAge ? `, Age ${data.youthAge}` : ''}` :
+              data.referralType === 'multiple' ? `Multiple Youth (${data.numberOfYouth})` :
+              data.referralType === 'entire-house' ? `Entire Facility (${data.numberOfYouth} Residents)` :
+              'Youth Services Inquiry';
+              
             await twilioClient.messages.create({
-              body: `New Youth Services ${data.formType === 'group-home' ? 'Group Home' : 'Parent'} Inquiry\n\nYouth: ${data.youthName}, Age ${data.youthAge}\nContact: ${data.contactName}\n${data.urgencyLevel === 'immediate' ? '🚨 URGENT - Crisis Situation' : 'Priority: ' + (data.urgencyLevel === 'soon' ? 'Soon' : 'Planning')}\n\nCheck email for full details.`,
+              body: `New Youth Services ${data.formType === 'group-home' ? 'Group Home' : 'Parent'} Inquiry\n\n${youthInfo}\nContact: ${data.contactName}\n${data.urgencyLevel === 'immediate' ? '🚨 URGENT - Crisis Situation' : 'Priority: ' + (data.urgencyLevel === 'soon' ? 'Soon' : 'Planning')}\n\nCheck email for full details.`,
               from: requiredEnvVars.TWILIO_PHONE_NUMBER!,
               to: phone
             });
@@ -381,8 +392,13 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        const youthReference = data.youthName || 
+          (data.referralType === 'multiple' ? 'your youth referral' : 
+           data.referralType === 'entire-house' ? 'your facility referral' : 
+           'your inquiry');
+           
         await twilioClient.messages.create({
-          body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${data.youthName} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0277.`,
+          body: `Thank you for contacting Empower Treatment Youth Services.\n\nWe've received your inquiry for ${youthReference} and our team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}.\n\nIf this is an emergency, please call us immediately at (740) 200-0277.`,
           from: requiredEnvVars.TWILIO_PHONE_NUMBER!,
           to: formattedPhone
         });
@@ -405,13 +421,13 @@ export async function POST(request: NextRequest) {
             </div>
             <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-radius: 0 0 12px 12px;">
               <p>Dear ${data.contactName},</p>
-              <p>We've received your inquiry regarding youth services for <strong>${data.youthName}</strong>. Our specialized team understands the unique challenges teens face, and we're here to help.</p>
+              <p>We've received your inquiry regarding youth services${data.youthName ? ` for <strong>${data.youthName}</strong>` : ''}. Our specialized team understands the unique challenges teens face, and we're here to help.</p>
               
               <div style="background: #fee2e2; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <p style="margin: 0; font-weight: 600; color: #991b1b;">What happens next:</p>
                 <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #1f2937;">
                   <li>A member of our youth services team will contact you within ${data.urgencyLevel === 'immediate' ? '24 hours' : '24-48 hours'}</li>
-                  <li>We'll discuss ${data.youthName}'s specific needs and treatment options</li>
+                  <li>We'll discuss ${data.youthName ? `${data.youthName}'s` : 'the youth\'s'} specific needs and treatment options</li>
                   <li>We'll verify insurance coverage and explain our programs</li>
                   ${data.formType === 'parent' ? '<li>We can schedule a family consultation to address your concerns</li>' : '<li>We\'ll coordinate with your team to ensure continuity of care</li>'}
                 </ul>
@@ -436,7 +452,7 @@ export async function POST(request: NextRequest) {
                 <li>Email: support@empowertreatment.com</li>
               </ul>
               
-              <p>Thank you for trusting Empower Treatment with ${data.youthName}'s care.</p>
+              <p>Thank you for trusting Empower Treatment with ${data.youthName ? `${data.youthName}'s` : 'your youth\'s'} care.</p>
               
               <p>Sincerely,<br>
               The Empower Treatment Youth Services Team</p>
@@ -464,3 +480,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
