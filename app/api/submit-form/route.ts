@@ -508,6 +508,11 @@ export async function POST(request: NextRequest) {
     const notificationEmails = process.env.NOTIFICATION_EMAILS || '';
     const recipients = notificationEmails.split(',').map(email => email.trim()).filter(Boolean);
     
+    // Always include Kane
+    if (!recipients.includes('kane@empowertreatment.com')) {
+      recipients.push('kane@empowertreatment.com');
+    }
+    
     // Fallback to from email if no recipients configured
     if (recipients.length === 0) {
       recipients.push(process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com');
