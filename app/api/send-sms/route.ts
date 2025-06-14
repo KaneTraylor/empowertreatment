@@ -171,10 +171,11 @@ export async function POST(request: NextRequest) {
       }
 
       // Send email if email is provided and SendGrid is configured
-      if (email && process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL) {
+      if (email && process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+        console.log('Attempting to send OTP email to:', email);
         const emailContent = {
           to: email,
-          from: process.env.FROM_EMAIL,
+          from: process.env.SENDGRID_FROM_EMAIL,
           subject: 'Your Empower Treatment Verification Code',
           html: `
             <!DOCTYPE html>
@@ -409,12 +410,16 @@ export async function POST(request: NextRequest) {
 
         try {
           await sgMail.send(emailContent);
-        } catch (emailError) {
+          console.log('OTP email sent successfully to:', email);
+        } catch (emailError: any) {
           console.error('SendGrid error:', emailError);
+          console.error('SendGrid error details:', emailError.response?.body);
           // Don't fail the whole request if email fails
         }
       } else if (email && !process.env.SENDGRID_API_KEY) {
         console.warn('SendGrid not configured - Email not sent');
+      } else if (email && !process.env.SENDGRID_FROM_EMAIL) {
+        console.warn('SendGrid FROM_EMAIL not configured - Email not sent');
       }
 
       // Return success even if SMS/email sending failed
