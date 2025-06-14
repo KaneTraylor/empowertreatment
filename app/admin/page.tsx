@@ -17,9 +17,35 @@ interface User {
   role: string;
 }
 
+interface WeekendPass {
+  pass_id: string;
+  resident_name: string;
+  room_number: string;
+  phone: string;
+  departure_date: string;
+  departure_time: string;
+  return_date: string;
+  return_time: string;
+  destination: string;
+  destination_address: string;
+  purpose_of_visit?: string;
+  purpose?: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
+  transportation_method: string;
+  driver_name?: string;
+  vehicle_info?: string;
+  status: 'pending' | 'approved' | 'denied';
+  approved_by?: string;
+  approved_at?: string;
+  created_at: string;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [weekendPasses, setWeekendPasses] = useState<WeekendPass[]>([]);
+  const [activeTab, setActiveTab] = useState<'submissions' | 'weekend-passes'>('submissions');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -38,6 +64,7 @@ export default function AdminPage() {
         setUser(data.user);
         setAuthenticating(false);
         fetchSubmissions();
+        fetchWeekendPasses();
       } else {
         router.push('/login');
       }
@@ -61,6 +88,42 @@ export default function AdminPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWeekendPasses = async () => {
+    try {
+      const response = await fetch('/api/weekend-passes');
+      const result = await response.json();
+      
+      if (result.passes) {
+        setWeekendPasses(result.passes);
+      }
+    } catch (err) {
+      console.error('Error loading weekend passes:', err);
+    }
+  };
+
+  const handlePassAction = async (passId: string, action: 'approve' | 'deny') => {
+    try {
+      const response = await fetch('/api/weekend-passes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passId, action })
+      });
+      
+      if (response.ok) {
+        // Update local state
+        setWeekendPasses(passes => 
+          passes.map(pass => 
+            pass.pass_id === passId 
+              ? { ...pass, status: action === 'approve' ? 'approved' : 'denied', approved_by: user?.email, approved_at: new Date().toISOString() }
+              : pass
+          )
+        );
+      }
+    } catch (err) {
+      console.error('Error updating pass:', err);
     }
   };
 
@@ -106,7 +169,43 @@ export default function AdminPage() {
               </div>
             </div>
             
-            <div className="flex justify-between items-center">
+            {/* Tab Navigation */}
+            <div className="border-b border-gray-200 mt-6">
+              <nav className="flex space-x-8">
+                <button
+                  onClick={() => setActiveTab('submissions')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === 'submissions'
+                      ? 'border-[#005c65] text-[#005c65]'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Form Submissions
+                </button>
+                <button
+                  onClick={() => setActiveTab('weekend-passes')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === 'weekend-passes'
+                      ? 'border-[#005c65] text-[#005c65]'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Weekend Passes
+                </button>
+              </nav>
+            </div>
+          </div>
+          
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
+        {/* Form Submissions Tab */}
+        {activeTab === 'submissions' && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-800">Form Submissions</h2>
               <button
                 onClick={exportCSV}
@@ -115,25 +214,18 @@ export default function AdminPage() {
                 Export to CSV
               </button>
             </div>
-          
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
-              {error}
+            
+            <div className="text-gray-600 mb-6">
+              Total submissions: {submissions.length}
             </div>
-          )}
-          
-          <div className="mt-4 text-gray-600">
-            Total submissions: {submissions.length}
-          </div>
-        </div>
-
-        {submissions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center text-gray-500">
-            No submissions yet. Submit a test form to see data here.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {submissions.map((submission, index) => (
+            
+            {submissions.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">
+                No submissions yet. Submit a test form to see data here.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {submissions.map((submission, index) => (
               <motion.div
                 key={submission.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -192,8 +284,151 @@ export default function AdminPage() {
                     {JSON.stringify(submission.data, null, 2)}
                   </pre>
                 </details>
-                </motion.div>
-            ))}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Weekend Passes Tab */}
+        {activeTab === 'weekend-passes' && (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Weekend Pass Requests</h2>
+            
+            {weekendPasses.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">
+                No weekend pass requests yet.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Resident
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Dates
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Destination
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Submitted
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {weekendPasses.map((pass) => (
+                      <tr key={pass.pass_id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {pass.resident_name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              Room {pass.room_number}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {new Date(pass.departure_date).toLocaleDateString()} - {new Date(pass.return_date).toLocaleDateString()}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {pass.departure_time} - {pass.return_time}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">
+                            {pass.destination}
+                          </div>
+                          <div className="text-sm text-gray-500 truncate max-w-xs">
+                            {pass.destination_address}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            pass.status === 'pending' 
+                              ? 'bg-yellow-100 text-yellow-800' 
+                              : pass.status === 'approved'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {pass.status}
+                          </span>
+                          {pass.approved_by && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              by {pass.approved_by}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(pass.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {pass.status === 'pending' ? (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handlePassAction(pass.pass_id, 'approve')}
+                                className="text-green-600 hover:text-green-900"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handlePassAction(pass.pass_id, 'deny')}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                Deny
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                // Show details modal or expand row
+                                const details = `
+Pass ID: ${pass.pass_id}
+Resident: ${pass.resident_name} (Room ${pass.room_number})
+Phone: ${pass.phone}
+
+Departure: ${pass.departure_date} at ${pass.departure_time}
+Return: ${pass.return_date} at ${pass.return_time}
+
+Destination: ${pass.destination}
+Address: ${pass.destination_address}
+Purpose: ${pass.purpose_of_visit || pass.purpose || 'Not specified'}
+
+Emergency Contact: ${pass.emergency_contact_name}
+Phone: ${pass.emergency_contact_phone}
+
+Transportation: ${pass.transportation_method}
+${pass.driver_name ? `Driver: ${pass.driver_name}` : ''}
+${pass.vehicle_info ? `Vehicle: ${pass.vehicle_info}` : ''}
+
+Status: ${pass.status}
+${pass.approved_by ? `Approved by: ${pass.approved_by}` : ''}
+${pass.approved_at ? `Approved at: ${new Date(pass.approved_at).toLocaleString()}` : ''}`;
+                                alert(details);
+                              }}
+                              className="text-[#005c65] hover:text-[#004a52]"
+                            >
+                              View Details
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
         </div>
