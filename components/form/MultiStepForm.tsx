@@ -208,17 +208,21 @@ export function MultiStepForm() {
           if (!response.ok) {
             const error = await response.json();
             console.error('Failed to send OTP:', error.message);
-            // You might want to show an error to the user here
+            alert('Failed to send verification code. Please try again.');
             return;
           }
+          
+          // Successfully sent OTP, now advance to OTP step
+          goToNextStep();
         } catch (error) {
           console.error('Failed to send OTP:', error);
-          // You might want to show an error to the user here
+          alert('Failed to send verification code. Please check your connection and try again.');
           return;
         }
+      } else {
+        // No contact info provided, still advance
+        goToNextStep();
       }
-      
-      goToNextStep();
     } else if (currentStepId === 'otp') {
       goToNextStep();
     } else if (currentStepId === 'opioid-use') {

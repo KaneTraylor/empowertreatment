@@ -12,15 +12,96 @@ const twilioClient = twilio(
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
+// Rate limiting: Track OTP attempts
+const otpAttempts = new Map<string, { count: number; firstAttempt: number }>();
+
+// Clean up old entries every hour
+setInterval(() => {
+  const now = Date.now();
+  otpAttempts.forEach((data, key) => {
+    if (now - data.firstAttempt > 3600000) { // 1 hour
+      otpAttempts.delete(key);
+    }
+  });
+}, 3600000);
+
 export async function POST(request: NextRequest) {
   try {
     const { phone, email } = await request.json();
+    
+    // Get client IP for rate limiting
+    const clientIp = request.headers.get('x-forwarded-for') || 
+                     request.headers.get('x-real-ip') || 
+                     'unknown';
+    
+    // Create rate limit key based on phone/email and IP
+    const rateLimitKey = `${phone || email}_${clientIp}`;
+    
+    // Check rate limit
+    const now = Date.now();
+    const attempts = otpAttempts.get(rateLimitKey);
+    
+    if (attempts) {
+      // Reset if more than 1 hour has passed
+      if (now - attempts.firstAttempt > 3600000) {
+        otpAttempts.set(rateLimitKey, { count: 1, firstAttempt: now });
+      } else if (attempts.count >= 5) {
+        // Max 5 attempts per hour
+        const timeRemaining = Math.ceil((3600000 - (now - attempts.firstAttempt)) / 60000);
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: `Too many verification attempts. Please try again in ${timeRemaining} minutes.` 
+          },
+          { status: 429 }
+        );
+      } else {
+        // Increment attempt count
+        attempts.count++;
+      }
+    } else {
+      // First attempt
+      otpAttempts.set(rateLimitKey, { count: 1, firstAttempt: now });
+    }
 
     if (!phone && !email) {
       return NextResponse.json(
         { success: false, message: 'Either phone or email is required' },
         { status: 400 }
       );
+    }
+    
+    // Validate phone number format
+    if (phone) {
+      // Remove all non-digits
+      const phoneDigits = phone.replace(/\D/g, '');
+      
+      // Check if it's a valid US phone number (10 digits)
+      if (phoneDigits.length !== 10) {
+        return NextResponse.json(
+          { success: false, message: 'Please enter a valid 10-digit US phone number' },
+          { status: 400 }
+        );
+      }
+      
+      // Check if it starts with a valid US area code (not 0 or 1)
+      if (phoneDigits[0] === '0' || phoneDigits[0] === '1') {
+        return NextResponse.json(
+          { success: false, message: 'Please enter a valid US phone number' },
+          { status: 400 }
+        );
+      }
+    }
+    
+    // Validate email format
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return NextResponse.json(
+          { success: false, message: 'Please enter a valid email address' },
+          { status: 400 }
+        );
+      }
     }
 
     // Generate OTP

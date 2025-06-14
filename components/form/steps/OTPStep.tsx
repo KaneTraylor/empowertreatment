@@ -6,6 +6,8 @@ export function OTPStep({ data, updateData, onNext, onBack }: StepProps) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -122,6 +124,10 @@ export function OTPStep({ data, updateData, onNext, onBack }: StepProps) {
       {error && (
         <p className="text-center text-sm text-red-600">{error}</p>
       )}
+      
+      {resendMessage && (
+        <p className="text-center text-sm text-green-600">{resendMessage}</p>
+      )}
 
       <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
         <Button
@@ -148,11 +154,40 @@ export function OTPStep({ data, updateData, onNext, onBack }: StepProps) {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Button
             variant="outline"
-            onClick={() => {/* Implement resend logic */}}
-            disabled={isLoading}
+            onClick={async () => {
+              setResendLoading(true);
+              setResendMessage('');
+              setError('');
+              
+              try {
+                const response = await fetch('/api/send-sms', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    phone: data.mobileNumber,
+                    email: data.email,
+                  }),
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                  setResendMessage('New code sent!');
+                  setOtp(['', '', '', '', '', '']);
+                  inputRefs.current[0]?.focus();
+                } else {
+                  setError(result.message || 'Failed to resend code');
+                }
+              } catch (err) {
+                setError('Failed to resend code. Please try again.');
+              } finally {
+                setResendLoading(false);
+              }
+            }}
+            disabled={isLoading || resendLoading}
             className="w-full sm:w-auto"
           >
-            Send code again
+            {resendLoading ? 'Sending...' : 'Send code again'}
           </Button>
           <Button
             onClick={handleSubmit}
