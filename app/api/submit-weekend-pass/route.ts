@@ -95,7 +95,12 @@ export async function POST(request: NextRequest) {
     // If not saved to Supabase, save locally
     if (!saved) {
       try {
-        await saveWeekendPass(passData);
+        // Add created_at for local storage
+        const passDataWithTimestamp = {
+          ...passData,
+          created_at: new Date().toISOString()
+        };
+        await saveWeekendPass(passDataWithTimestamp);
         console.log('Weekend pass saved to local storage');
       } catch (localError) {
         console.error('Failed to save to local storage:', localError);
