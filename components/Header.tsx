@@ -52,11 +52,6 @@ export function Header() {
               Verify Insurance
             </Link>
             <span className={isScrolled ? 'text-gray-400' : 'text-white/50'}>|</span>
-            <Link href="#" className={`transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white hover:text-white/80'
-            }`}>
-              Need help?
-            </Link>
             <Link href="tel:740-200-0016" className={`transition-colors ${
               isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white hover:text-white/80'
             }`}>
@@ -125,13 +120,6 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Verify Insurance
-            </Link>
-            <Link 
-              href="#" 
-              className="text-lg text-gray-900 hover:text-[#005c65] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Need help?
             </Link>
             <Link 
               href="tel:740-200-0016" 
