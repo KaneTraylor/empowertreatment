@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
 
     // Youth services team recipients
     const recipients = [
-      'kane@empowertreatment.com',
+      'info@risingtidesconsults.com',
       'taylor@empowertreatment.com',
       'carol@empowertreatment.com',
       'dottie@empowertreatment.com',

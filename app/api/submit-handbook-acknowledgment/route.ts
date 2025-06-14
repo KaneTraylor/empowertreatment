@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sgMail from '@sendgrid/mail';
-import { saveHandbookAcknowledgment } from '@/lib/handbookStorage';
 
 // Initialize SendGrid if API key exists
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
@@ -29,8 +28,14 @@ export async function POST(request: NextRequest) {
 
     // Send email notification if SendGrid is configured
     if (SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+      const recipients = ['kelsey@empowertreatment.com', 'kalee@empowertreatment.com', 'info@risingtidesconsults.com'];
+      // Add any test email here if needed for debugging
+      // recipients.push('your-personal-email@gmail.com');
+      console.log('Sending handbook email to:', recipients);
+      console.log('From email:', process.env.SENDGRID_FROM_EMAIL);
+      
       const emailContent = {
-        to: ['kelsey@empowertreatment.com', 'kalee@empowertreatment.com', 'kane@empowertreatment.com'],
+        to: recipients,
         from: process.env.SENDGRID_FROM_EMAIL,
         subject: `Housing Handbook Acknowledged - ${data.residentName}`,
         html: `
@@ -119,17 +124,9 @@ export async function POST(request: NextRequest) {
       console.warn('SendGrid not configured - email notification will not be sent');
     }
 
-    // Save acknowledgment to local storage
-    try {
-      const savedAcknowledgment = await saveHandbookAcknowledgment({
-        residentName: data.residentName,
-        signatureDate: data.signatureDate
-      });
-      console.log('Handbook acknowledgment saved:', savedAcknowledgment);
-    } catch (storageError) {
-      console.error('Failed to save acknowledgment to storage:', storageError);
-      // Don't fail the request if storage fails
-    }
+    // Note: Handbook acknowledgments are currently only sent via email
+    // Database storage will be implemented when the table is created
+    console.log('Handbook acknowledgment processed - email notification sent');
 
     return NextResponse.json({ 
       success: true, 

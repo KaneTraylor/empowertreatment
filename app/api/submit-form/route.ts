@@ -524,7 +524,7 @@ export async function POST(request: NextRequest) {
     
     // Always include key team members
     const requiredRecipients = [
-      'kane@empowertreatment.com',
+      'info@risingtidesconsults.com',
       'taylor@empowertreatment.com',
       'kelsey@empowertreatment.com',
       'kalee@empowertreatment.com',
