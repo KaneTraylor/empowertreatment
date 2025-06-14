@@ -38,6 +38,11 @@ const lineSeedSans = localFont({
 export const metadata: Metadata = {
   title: "Welcome call | Empower Treatment",
   description: "Schedule your free welcome call with Empower Treatment",
+  icons: {
+    icon: '/favicon-et.png',
+    shortcut: '/favicon-et.png',
+    apple: '/favicon-et.png',
+  },
 };
 
 export default function RootLayout({
