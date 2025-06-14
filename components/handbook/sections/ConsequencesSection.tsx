@@ -124,7 +124,7 @@ export default function ConsequencesSection({ onAcknowledge, isAcknowledged }: S
           <li>Provide any supporting evidence</li>
           <li>Meeting scheduled within 48 hours</li>
           <li>Decision provided in writing</li>
-          <li>Director's decision is final</li>
+          <li>Director&apos;s decision is final</li>
         </ol>
 
         <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Behavior Contracts</h3>

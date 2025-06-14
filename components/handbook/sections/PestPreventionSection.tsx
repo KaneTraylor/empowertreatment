@@ -70,7 +70,7 @@ export function PestPreventionSection({ onAcknowledge, isAcknowledged }: Section
         <section>
           <div className="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-lg">
             <p className="text-gray-700">
-              Maintaining a pest-free environment is everyone's responsibility. By following these simple 
+              Maintaining a pest-free environment is everyone&apos;s responsibility. By following these simple 
               prevention measures, we can ensure our recovery houses remain clean, healthy, and comfortable 
               for all residents.
             </p>

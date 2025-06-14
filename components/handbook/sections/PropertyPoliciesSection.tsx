@@ -19,8 +19,8 @@ export default function PropertyPoliciesSection({ onAcknowledge, isAcknowledged 
       
       <div className="prose prose-lg max-w-none text-gray-700">
         <p className="mb-6">
-          Respecting property - both the house's and other residents' - is essential for 
-          maintaining a harmonious living environment. These policies ensure everyone's 
+          Respecting property - both the house&apos;s and other residents&apos; - is essential for 
+          maintaining a harmonious living environment. These policies ensure everyone&apos;s 
           belongings are secure and the facility remains in good condition.
         </p>
 
@@ -135,14 +135,14 @@ export default function PropertyPoliciesSection({ onAcknowledge, isAcknowledged 
           <li>The house is not responsible for lost/stolen items</li>
           <li>Report thefts to staff immediately</li>
           <li>File police reports for significant thefts</li>
-          <li>Consider renter's insurance for valuables</li>
+          <li>Consider renter&apos;s insurance for valuables</li>
           <li>Use provided locks and storage</li>
         </ul>
 
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 mt-8">
           <h4 className="text-lg font-semibold text-green-900 mb-2">Tip for Success</h4>
           <p className="text-green-800">
-            Keep your living space organized and respect others' property. A clean, orderly 
+            Keep your living space organized and respect others&apos; property. A clean, orderly 
             environment supports clear thinking and positive recovery. If you need additional 
             storage solutions or have concerns about property security, talk to staff.
           </p>

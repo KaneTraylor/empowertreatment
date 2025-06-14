@@ -19,7 +19,7 @@ export default function DischargeSection({ onAcknowledge, isAcknowledged }: Sect
       
       <div className="prose prose-lg max-w-none text-gray-700">
         <p className="mb-6">
-          Planning for life after recovery housing begins from day one. Whether you're graduating 
+          Planning for life after recovery housing begins from day one. Whether you&apos;re graduating 
           successfully or leaving for other reasons, we want to ensure you have the support and 
           resources needed for continued recovery.
         </p>
@@ -179,9 +179,9 @@ export default function DischargeSection({ onAcknowledge, isAcknowledged }: Sect
         </ul>
 
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 mt-8">
-          <h4 className="text-lg font-semibold text-green-900 mb-2">You're Always Part of Our Community</h4>
+          <h4 className="text-lg font-semibold text-green-900 mb-2">You&apos;re Always Part of Our Community</h4>
           <p className="text-green-800">
-            Graduation doesn't mean goodbye. We celebrate your success and remain here as a 
+            Graduation doesn&apos;t mean goodbye. We celebrate your success and remain here as a 
             resource. Many successful alumni stay connected for years, giving back and 
             supporting others in their recovery journey. Your story can inspire others!
           </p>

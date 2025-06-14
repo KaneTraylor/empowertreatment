@@ -41,11 +41,11 @@ export function ResidentRightsSection({ onAcknowledge, isAcknowledged }: Section
 
         {/* Empower Treatment's Grievance Policy */}
         <section>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Empower Treatment's Grievance Policy</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Empower Treatment&apos;s Grievance Policy</h3>
           <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
             <p className="text-gray-700">
-              Empower Treatment takes Client's rights very seriously and we understand all of our work is lost if a 
-              client's rights are violated and they no longer feel safe in our care. Empower Treatment makes sure that 
+              Empower Treatment takes Client&apos;s rights very seriously and we understand all of our work is lost if a 
+              client&apos;s rights are violated and they no longer feel safe in our care. Empower Treatment makes sure that 
               all relevant laws and standards are followed closely when protecting client rights. Clients have a right 
               to file a grievance. <strong>Clients will not be punished or removed from services if they choose to file 
               a complaint or grievance.</strong>
@@ -58,8 +58,8 @@ export function ResidentRightsSection({ onAcknowledge, isAcknowledged }: Section
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Process for Filing a Grievance with Empower Treatment</h3>
           <div className="space-y-4">
             <p className="text-gray-700">
-              The client can choose to complete ET's "Grievance Summary Form" that is available through Empower 
-              Treatment's website. The client can also choose to contact Empower Treatment's Client Rights Officer (CRO) 
+              The client can choose to complete ET&apos;s &quot;Grievance Summary Form&quot; that is available through Empower 
+              Treatment&apos;s website. The client can also choose to contact Empower Treatment&apos;s Client Rights Officer (CRO) 
               to file the grievance verbally. A client should expect a response from Empower Treatment within 24 business 
               hours of filing a grievance.
             </p>
@@ -79,7 +79,7 @@ export function ResidentRightsSection({ onAcknowledge, isAcknowledged }: Section
 
         {/* Client Rights Officer Contact */}
         <section>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Empower Treatment's Client Rights Officer</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Empower Treatment&apos;s Client Rights Officer</h3>
           <div className="bg-[#005c65] text-white rounded-lg p-6">
             <div className="space-y-3">
               <div className="flex items-center">

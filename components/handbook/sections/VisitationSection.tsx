@@ -59,7 +59,7 @@ export default function VisitationSection({ onAcknowledge, isAcknowledged }: Sec
         <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Visitor Approval Process</h3>
         <ol className="list-decimal pl-6 mb-6 space-y-2">
           <li>Submit visitor request form 48 hours in advance</li>
-          <li>Provide visitor's full name and relationship</li>
+          <li>Provide visitor&apos;s full name and relationship</li>
           <li>Visitors must be 18+ or accompanied by approved adult</li>
           <li>Staff will conduct background screening</li>
           <li>Approval/denial communicated within 24 hours</li>
@@ -98,7 +98,7 @@ export default function VisitationSection({ onAcknowledge, isAcknowledged }: Sec
           <li>Must be supervised by approved adult at all times</li>
           <li>Limited to 2-hour visits</li>
           <li>Must remain in designated family visiting area</li>
-          <li>Resident responsible for child's behavior</li>
+          <li>Resident responsible for child&apos;s behavior</li>
           <li>Quiet activities only (bring books, coloring, quiet games)</li>
         </ul>
 

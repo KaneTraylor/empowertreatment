@@ -167,7 +167,7 @@ export function RulesSection({ onAcknowledge, isAcknowledged }: SectionProps) {
             </li>
             <li className="flex items-start">
               <span className="text-purple-500 mr-2">•</span>
-              L2 Recovery Houses have a "Wrap Up" meeting every night that is led by the Head of House. All residents are required to attend.
+              L2 Recovery Houses have a &quot;Wrap Up&quot; meeting every night that is led by the Head of House. All residents are required to attend.
             </li>
           </ul>
         </section>
@@ -212,7 +212,7 @@ export function RulesSection({ onAcknowledge, isAcknowledged }: SectionProps) {
           <ul className="space-y-2 text-gray-700">
             <li className="flex items-start">
               <span className="text-gray-500 mr-2">•</span>
-              SR / ET staff are able to search any resident's room, property and/or persons during their stay.
+              SR / ET staff are able to search any resident&apos;s room, property and/or persons during their stay.
             </li>
           </ul>
         </section>
@@ -261,7 +261,7 @@ export function RulesSection({ onAcknowledge, isAcknowledged }: SectionProps) {
             <h4 className="font-semibold text-yellow-900 mb-2">13. Tobacco Use, E-Cigarettes, Vape</h4>
             <p className="text-yellow-800 text-sm">
               Tobacco, E-Cigarettes, and Vape are not allowed to be used inside of the recovery houses. 
-              However, there are designated "smoking areas" outside of each house that can be used.
+              However, there are designated &quot;smoking areas&quot; outside of each house that can be used.
             </p>
           </div>
 
@@ -333,7 +333,7 @@ export function RulesSection({ onAcknowledge, isAcknowledged }: SectionProps) {
               <h4 className="font-semibold text-gray-800 mb-2">22. Vehicles</h4>
               <ul className="text-sm text-gray-700 space-y-1">
                 <li>• Residents are allowed to have one vehicle on-site at their recovery housing location.</li>
-                <li>• Residents must have valid driver's license, proof of active vehicle insurance, copy of vehicle registration.</li>
+                <li>• Residents must have valid driver&apos;s license, proof of active vehicle insurance, copy of vehicle registration.</li>
               </ul>
             </div>
 

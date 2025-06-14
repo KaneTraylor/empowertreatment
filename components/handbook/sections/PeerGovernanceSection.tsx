@@ -154,7 +154,7 @@ export function PeerGovernanceSection({ onAcknowledge, isAcknowledged }: Section
           <div className="bg-gray-100 rounded-lg p-6">
             <h4 className="font-semibold text-gray-900 mb-3">Interested in Becoming a Head of House?</h4>
             <p className="text-gray-700 mb-4">
-              If you're interested in serving as a Head of House and believe you meet the qualifications, 
+              If you&apos;re interested in serving as a Head of House and believe you meet the qualifications, 
               speak with your case manager or housing staff. This is a voluntary position that can enhance 
               your recovery journey while helping others.
             </p>

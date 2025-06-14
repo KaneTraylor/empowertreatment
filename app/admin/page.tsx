@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
@@ -51,11 +51,7 @@ export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
   const [authenticating, setAuthenticating] = useState(true);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/verify');
       const data = await response.json();
@@ -71,7 +67,11 @@ export default function AdminPage() {
     } catch (err) {
       router.push('/login');
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const fetchSubmissions = async () => {
     try {

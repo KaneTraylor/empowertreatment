@@ -62,7 +62,7 @@ export default function MedicationManagementSection({ onAcknowledge, isAcknowled
           We support medication-assisted treatment for substance use disorders. MAT medications include:
         </p>
         <ul className="list-disc pl-6 mb-6 space-y-2">
-          <li><strong>Suboxone/Subutex:</strong> Must follow prescriber's instructions</li>
+          <li><strong>Suboxone/Subutex:</strong> Must follow prescriber&apos;s instructions</li>
           <li><strong>Methadone:</strong> Daily clinic attendance required</li>
           <li><strong>Vivitrol:</strong> Monthly injection appointments</li>
           <li><strong>Naltrexone:</strong> Daily administration monitored</li>
@@ -124,8 +124,8 @@ export default function MedicationManagementSection({ onAcknowledge, isAcknowled
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-8">
           <h4 className="text-lg font-semibold text-yellow-900 mb-2">Remember</h4>
           <p className="text-yellow-800">
-            Never stop taking prescribed medications without consulting your doctor. If you're 
-            having issues with your medications, speak with staff immediately. We're here to 
+            Never stop taking prescribed medications without consulting your doctor. If you&apos;re 
+            having issues with your medications, speak with staff immediately. We&apos;re here to 
             help you manage your health safely during recovery.
           </p>
         </div>

@@ -38,7 +38,7 @@ export default function HouseMeetingsSection({ onAcknowledge, isAcknowledged }: 
         <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Meeting Format</h3>
         <ol className="list-decimal pl-6 mb-6 space-y-2">
           <li>Opening and serenity prayer</li>
-          <li>Review of previous week's goals</li>
+          <li>Review of previous week&apos;s goals</li>
           <li>House business and announcements</li>
           <li>Resident check-ins and shares</li>
           <li>Address any house concerns or conflicts</li>
@@ -84,7 +84,7 @@ export default function HouseMeetingsSection({ onAcknowledge, isAcknowledged }: 
           <li>Arrive on time and stay for the entire meeting</li>
           <li>Turn off cell phones or put on silent</li>
           <li>Actively participate and share when comfortable</li>
-          <li>Respect confidentiality - what's shared stays here</li>
+          <li>Respect confidentiality - what&apos;s shared stays here</li>
           <li>No side conversations during meetings</li>
           <li>Dress appropriately</li>
         </ul>

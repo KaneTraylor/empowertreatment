@@ -116,7 +116,7 @@ export function EmergencyProtocolsSection({ onAcknowledge, isAcknowledged }: Sec
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Medical Emergency Response</h3>
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              <li>Ensure your safety first - don't put yourself at risk</li>
+              <li>Ensure your safety first - don&apos;t put yourself at risk</li>
               <li>Call 911 immediately for serious conditions</li>
               <li>Stay with the person if safe to do so</li>
               <li>Follow dispatcher instructions exactly</li>

@@ -157,8 +157,8 @@ export default function EmergencyProceduresSection({ onAcknowledge, isAcknowledg
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-8">
           <h4 className="text-lg font-semibold text-blue-900 mb-2">Remember</h4>
           <p className="text-blue-800">
-            In any emergency, your safety comes first. Don't hesitate to call 911 or alert staff 
-            if you're unsure. It's better to err on the side of caution. Regular drills help 
+            In any emergency, your safety comes first. Don&apos;t hesitate to call 911 or alert staff 
+            if you&apos;re unsure. It&apos;s better to err on the side of caution. Regular drills help 
             ensure everyone knows what to do - take them seriously.
           </p>
         </div>

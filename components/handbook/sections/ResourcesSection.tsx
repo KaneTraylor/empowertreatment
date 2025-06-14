@@ -164,9 +164,9 @@ export default function ResourcesSection({ onAcknowledge, isAcknowledged }: Sect
           <ul className="list-disc pl-6 space-y-2 text-green-800">
             <li>Keep this resource list for after discharge</li>
             <li>Update your support network contacts regularly</li>
-            <li>Don't hesitate to ask for help</li>
-            <li>Recovery is possible - you're proof!</li>
-            <li>Give back when you're able</li>
+            <li>Don&apos;t hesitate to ask for help</li>
+            <li>Recovery is possible - you&apos;re proof!</li>
+            <li>Give back when you&apos;re able</li>
           </ul>
         </div>
 
@@ -174,7 +174,7 @@ export default function ResourcesSection({ onAcknowledge, isAcknowledged }: Sect
           <h4 className="text-lg font-semibold text-blue-900 mb-2">Final Thoughts</h4>
           <p className="text-blue-800">
             This handbook represents our commitment to your success. Recovery is a journey, not a 
-            destination. Use these resources, follow the guidelines, and never forget that you're 
+            destination. Use these resources, follow the guidelines, and never forget that you&apos;re 
             part of a community that cares about your wellbeing. We believe in you!
           </p>
         </div>

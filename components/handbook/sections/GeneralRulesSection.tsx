@@ -66,8 +66,8 @@ export default function GeneralRulesSection({ onAcknowledge, isAcknowledged }: S
         <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">5. Privacy & Boundaries</h3>
         <ul className="list-disc pl-6 mb-6 space-y-2">
           <li>Knock before entering any room</li>
-          <li>Respect others' personal property</li>
-          <li>No entering others' rooms without permission</li>
+          <li>Respect others&apos; personal property</li>
+          <li>No entering others&apos; rooms without permission</li>
           <li>Staff may conduct room searches at any time</li>
           <li>Maintain appropriate boundaries with all residents</li>
         </ul>
@@ -77,7 +77,7 @@ export default function GeneralRulesSection({ onAcknowledge, isAcknowledged }: S
           <li>Cell phones permitted but must be on silent in common areas</li>
           <li>No phone use during meetings or meals</li>
           <li>Inappropriate internet use is prohibited</li>
-          <li>No sharing of other residents' personal information</li>
+          <li>No sharing of other residents&apos; personal information</li>
           <li>Social media use must not compromise anonymity</li>
         </ul>
 
@@ -85,7 +85,7 @@ export default function GeneralRulesSection({ onAcknowledge, isAcknowledged }: S
         <ul className="list-disc pl-6 mb-6 space-y-2">
           <li>Pay rent on time (due on the 1st of each month)</li>
           <li>Late fees apply after the 5th</li>
-          <li>Maintain renter's insurance if required</li>
+          <li>Maintain renter&apos;s insurance if required</li>
           <li>Pay for any damages you cause</li>
           <li>No lending or borrowing money between residents</li>
         </ul>
@@ -93,9 +93,9 @@ export default function GeneralRulesSection({ onAcknowledge, isAcknowledged }: S
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-8">
           <h4 className="text-lg font-semibold text-yellow-900 mb-2">Remember</h4>
           <p className="text-yellow-800">
-            These rules exist to create a safe and supportive environment for everyone's recovery. 
-            If you're struggling with any rule or need clarification, please speak with staff 
-            immediately. We're here to help you succeed.
+            These rules exist to create a safe and supportive environment for everyone&apos;s recovery. 
+            If you&apos;re struggling with any rule or need clarification, please speak with staff 
+            immediately. We&apos;re here to help you succeed.
           </p>
         </div>
       </div>

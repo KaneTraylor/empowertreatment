@@ -153,7 +153,7 @@ export default function DailyScheduleSection({ onAcknowledge, isAcknowledged }: 
           <h4 className="text-lg font-semibold text-green-900 mb-2">Success Tip</h4>
           <p className="text-green-800">
             Consistency is key! Following the daily schedule helps establish healthy routines 
-            that support long-term recovery. If you're struggling with any aspect of the schedule, 
+            that support long-term recovery. If you&apos;re struggling with any aspect of the schedule, 
             talk to staff about adjustments that might help you succeed.
           </p>
         </div>

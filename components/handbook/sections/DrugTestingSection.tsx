@@ -146,7 +146,7 @@ export default function DrugTestingSection({ onAcknowledge, isAcknowledged }: Se
         <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Support for Positive Tests</h3>
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
           <h4 className="text-lg font-semibold text-green-900 mb-2">We Want You to Succeed</h4>
-          <p className="text-green-800 mb-2">If you're struggling with cravings or relapse:</p>
+          <p className="text-green-800 mb-2">If you&apos;re struggling with cravings or relapse:</p>
           <ul className="list-disc pl-6 space-y-2 text-green-800">
             <li>Talk to staff BEFORE using</li>
             <li>Increase meeting attendance</li>
@@ -161,8 +161,8 @@ export default function DrugTestingSection({ onAcknowledge, isAcknowledged }: Se
           <h4 className="text-lg font-semibold text-blue-900 mb-2">Remember</h4>
           <p className="text-blue-800">
             Drug testing protects everyone in the house and supports your recovery. Each clean 
-            test is a victory worth celebrating. If you're tempted to use, reach out for help 
-            immediately - that's what recovery is all about.
+            test is a victory worth celebrating. If you&apos;re tempted to use, reach out for help 
+            immediately - that&apos;s what recovery is all about.
           </p>
         </div>
       </div>

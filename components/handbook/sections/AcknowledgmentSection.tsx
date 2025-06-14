@@ -22,7 +22,7 @@ export function AcknowledgmentSection({ onAcknowledge, isAcknowledged, allSectio
   return (
     <div className="p-8">
       <h2 className="text-3xl font-bold text-gray-900 mb-6">
-        Section 12: Residents' Handbook Acknowledgement
+        Section 12: Residents&apos; Handbook Acknowledgement
       </h2>
 
       <div className="space-y-8">

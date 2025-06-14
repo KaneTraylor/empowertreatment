@@ -64,14 +64,14 @@ export function WelcomeSection({ onAcknowledge, isAcknowledged }: SectionProps) 
           
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-[#005c65] mb-2">SR's Mission</h4>
+              <h4 className="font-semibold text-[#005c65] mb-2">SR&apos;s Mission</h4>
               <p className="text-gray-700 text-sm">
                 Focused on being a provider of quality recovery housing and seeking to provide sustainable, quality 
                 housing to under-served groups in our service area.
               </p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-[#005c65] mb-2">SR's Vision</h4>
+              <h4 className="font-semibold text-[#005c65] mb-2">SR&apos;s Vision</h4>
               <p className="text-gray-700 text-sm">
                 A safe, affordable home for everyone.
               </p>
