@@ -40,6 +40,12 @@ export function Header() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-4 text-sm">
+            <Link href="/insurance-verification" className={`transition-colors ${
+              isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white hover:text-white/80'
+            }`}>
+              Verify Insurance
+            </Link>
+            <span className={isScrolled ? 'text-gray-400' : 'text-white/50'}>|</span>
             <Link href="#" className={`transition-colors ${
               isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white hover:text-white/80'
             }`}>
@@ -100,6 +106,13 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-[80px] bg-white z-40">
           <nav className="flex flex-col p-6 space-y-4">
+            <Link 
+              href="/insurance-verification" 
+              className="text-lg text-gray-900 hover:text-[#005c65] transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Verify Insurance
+            </Link>
             <Link 
               href="#" 
               className="text-lg text-gray-900 hover:text-[#005c65] transition-colors"

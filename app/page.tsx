@@ -286,6 +286,25 @@ export default function Home() {
               Choose your insurer to learn more:
             </p>
             
+            {/* Insurance Verification Notice */}
+            <div className="mb-10 bg-white rounded-xl p-6 shadow-sm max-w-2xl mx-auto">
+              <div className="flex items-center gap-3 justify-center mb-3">
+                <svg className="w-6 h-6 text-[#005c65]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <h3 className="text-xl font-semibold text-gray-900">Verify Your Insurance Coverage</h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Check your insurance benefits before starting treatment. Our instant verification tool helps you understand your coverage and out-of-pocket costs.
+              </p>
+              <Link
+                href="/insurance-verification"
+                className="inline-flex items-center justify-center bg-[#005c65] text-white rounded-full px-6 py-3 text-base font-light hover:bg-[#004a52] transition-colors"
+              >
+                Verify Insurance Now →
+              </Link>
+            </div>
+            
             {/* Insurance Logos Grid */}
             <motion.div 
               className="flex flex-wrap justify-center items-center gap-4 md:gap-6 max-w-5xl mx-auto"
@@ -365,7 +384,7 @@ export default function Home() {
             <div className="mt-12">
               <p className="text-sm mb-4 text-gray-600">Don&apos;t see your insurance?</p>
               <Link
-                href="/welcome"
+                href="/insurance-verification"
                 className="inline-flex items-center justify-center bg-[#ef3d3d] text-white rounded-full px-8 py-3 text-base font-light hover:bg-[#d63333] transition-colors"
               >
                 Check your coverage →
@@ -1181,6 +1200,7 @@ export default function Home() {
                   <li><a href="/youth-services" className="text-gray-400 hover:text-white transition-colors">Teen & Youth Services</a></li>
                   <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Telehealth</a></li>
                   <li><a href="/welcome" className="text-gray-400 hover:text-white transition-colors">Medication Management</a></li>
+                  <li><a href="/insurance-verification" className="text-gray-400 hover:text-white transition-colors">Insurance Verification</a></li>
                 </ul>
               </div>
               
