@@ -76,16 +76,26 @@ export default function AdminPage() {
   const fetchSubmissions = async () => {
     try {
       const response = await fetch('/api/export');
+      console.log('Export API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Export API error:', errorText);
+        setError(`Failed to load submissions: ${response.statusText}`);
+        return;
+      }
+      
       const result = await response.json();
+      console.log('Export API result:', result);
       
       if (result.success) {
-        setSubmissions(result.data);
+        setSubmissions(result.data || []);
       } else {
-        setError('Failed to load submissions');
+        setError(result.error || 'Failed to load submissions');
       }
     } catch (err) {
       setError('Error loading submissions');
-      console.error(err);
+      console.error('Fetch error:', err);
     } finally {
       setLoading(false);
     }
@@ -94,7 +104,16 @@ export default function AdminPage() {
   const fetchWeekendPasses = async () => {
     try {
       const response = await fetch('/api/weekend-passes');
+      console.log('Weekend passes API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Weekend passes API error:', errorText);
+        return;
+      }
+      
       const result = await response.json();
+      console.log('Weekend passes result:', result);
       
       if (result.passes) {
         setWeekendPasses(result.passes);
@@ -236,7 +255,7 @@ export default function AdminPage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {submission.data.firstName || submission.data.fname} {submission.data.lastName || submission.data.lname}
+                      {submission.data.firstName || submission.data.fname || 'Unknown'} {submission.data.lastName || submission.data.lname || 'Name'}
                     </h3>
                     <p className="text-sm text-gray-600">
                       Submitted: {new Date(submission.created_at).toLocaleString()}

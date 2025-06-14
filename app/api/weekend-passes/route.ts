@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      jwt.verify(token.value, process.env.JWT_SECRET || 'your-secret-key');
+      jwt.verify(token.value, process.env.JWT_SECRET || 'empower-treatment-admin-secret-2024');
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     let user;
     try {
-      const decoded = jwt.verify(token.value, process.env.JWT_SECRET || 'your-secret-key') as any;
+      const decoded = jwt.verify(token.value, process.env.JWT_SECRET || 'empower-treatment-admin-secret-2024') as any;
       user = decoded.email;
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
