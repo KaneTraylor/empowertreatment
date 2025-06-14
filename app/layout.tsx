@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { CrisisHotline } from "@/components/CrisisHotline";
 
 // Configure Line Seed Sans font
 const lineSeedSans = localFont({
@@ -53,9 +55,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lineSeedSans.variable} ${lineSeedSans.className}`}>
+        <CrisisHotline />
         <SmoothScrollProvider>
           {children}
         </SmoothScrollProvider>
+        {/* Tidio Live Chat */}
+        <Script
+          src="//code.tidio.co/8fnf2kgzkglr7i8bvsrdqucgne1y097d.js"
+          strategy="afterInteractive"
+          async
+        />
       </body>
     </html>
   );
