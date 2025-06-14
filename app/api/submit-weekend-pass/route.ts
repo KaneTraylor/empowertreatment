@@ -83,9 +83,10 @@ export async function POST(request: NextRequest) {
     // Create approval link
     const approvalLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://empowertreatment.com'}/api/approve-pass?id=${passId}`;
 
-    // Send SMS to Kelsey and Kalee
+    // Send SMS to Kelsey, Kalee, and Kane
     const kelseyPhone = process.env.KELSEY_PHONE || '513-400-3475';
     const kaleePhone = process.env.KALEE_PHONE || '740-200-0076';
+    const kanePhone = process.env.KANE_PHONE || '740-200-0277';
     
     const smsMessage = `Weekend Pass Request from ${data.residentName} (Room ${data.roomNumber})
 
@@ -97,7 +98,7 @@ Review and approve: ${approvalLink}`;
 
     // Send to both staff members if Twilio is configured
     if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
-      const smsPromises = [kelseyPhone, kaleePhone].map(phone => 
+      const smsPromises = [kelseyPhone, kaleePhone, kanePhone].map(phone => 
         twilioClient.messages.create({
           body: smsMessage,
           from: process.env.TWILIO_PHONE_NUMBER,
@@ -116,7 +117,7 @@ Review and approve: ${approvalLink}`;
     // Send detailed email if SendGrid is configured
     if (SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
       const emailContent = {
-      to: ['kelsey@empowertreatment.com', 'kalee@empowertreatment.com'],
+      to: ['kelsey@empowertreatment.com', 'kalee@empowertreatment.com', 'kane@empowertreatment.com'],
       from: process.env.SENDGRID_FROM_EMAIL!,
       subject: `Weekend Pass Request - ${data.residentName}`,
       html: `
