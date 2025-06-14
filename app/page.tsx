@@ -1201,6 +1201,7 @@ export default function Home() {
                   <li><Link href="/welcome" className="text-gray-400 hover:text-white transition-colors">Telehealth</Link></li>
                   <li><Link href="/welcome" className="text-gray-400 hover:text-white transition-colors">Medication Management</Link></li>
                   <li><Link href="/insurance-verification" className="text-gray-400 hover:text-white transition-colors">Insurance Verification</Link></li>
+                  <li><Link href="/housing-portal" className="text-gray-400 hover:text-white transition-colors">Housing Portal</Link></li>
                 </ul>
               </div>
               
