@@ -57,6 +57,23 @@ export default function Welcome() {
               </div>
             </div>
             
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h3 className="font-semibold text-blue-900 mb-2 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Check Your Insurance Coverage
+              </h3>
+              <p className="text-sm text-blue-800 mb-3">
+                Want to know what your insurance covers before scheduling? We&apos;re in-network with all major insurance providers.
+              </p>
+              <Link href="/insurance-verification">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                  Verify Insurance Coverage
+                </Button>
+              </Link>
+            </div>
+            
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               <Link href="/form" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full">
