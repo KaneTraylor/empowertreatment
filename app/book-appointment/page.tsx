@@ -94,8 +94,8 @@ export default function BookAppointment() {
   const needsMapping = {
     'medication': ['sara'],
     'substance-use': ['kelsey', 'alex', 'kalee', 'nycole'],
-    'mental-health': ['kelsey', 'carol', 'kalee', 'nycole'],
-    'group-therapy': ['alex'],
+    'mental-health': ['carol'],
+    'group-therapy': ['alex', 'kalee'],
     'youth-services': ['carol'],
     'assessment': ['assessment']
   };
