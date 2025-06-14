@@ -4,8 +4,10 @@ import { FormData } from '@/types/form';
 import { supabaseAdmin, FormSubmission } from '@/lib/supabase';
 import { saveSubmission } from '@/lib/fileStorage';
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
+// Initialize SendGrid only if API key exists
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 // Helper function to format form data into readable email content
 function formatFormData(data: FormData): string {
@@ -124,8 +126,10 @@ function formatFrequency(value: string | undefined): string {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('Submit form API called');
   try {
     const data: FormData = await request.json();
+    console.log('Received form data with fields:', Object.keys(data));
 
     // First, save to Supabase
     let submissionId: string | undefined;
@@ -518,12 +522,18 @@ export async function POST(request: NextRequest) {
       html: htmlContent,
     };
 
-    // Log HTML for testing (remove this in production)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Email HTML Preview:', htmlContent);
+    // Send email to clinicians
+    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+      try {
+        await sgMail.send(msg);
+        console.log('Clinician notification email sent successfully');
+      } catch (emailError) {
+        console.error('Failed to send clinician email:', emailError);
+        // Don't fail the entire submission if email fails
+      }
+    } else {
+      console.warn('SendGrid not configured - clinician email not sent');
     }
-    
-    await sgMail.send(msg);
 
     // Send SMS notifications if appointment is scheduled
     if (data.appointmentDateTime && data.mobileNumber) {
@@ -583,7 +593,15 @@ export async function POST(request: NextRequest) {
         `,
       };
 
-      await sgMail.send(patientMsg);
+      if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
+        try {
+          await sgMail.send(patientMsg);
+          console.log('Patient confirmation email sent successfully');
+        } catch (patientEmailError) {
+          console.error('Failed to send patient email:', patientEmailError);
+          // Don't fail the entire submission if email fails
+        }
+      }
     }
 
     return NextResponse.json({ 
@@ -602,3 +620,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
