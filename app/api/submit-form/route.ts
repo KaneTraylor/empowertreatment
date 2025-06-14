@@ -7,6 +7,9 @@ import { saveSubmission } from '@/lib/fileStorage';
 // Initialize SendGrid only if API key exists
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('SendGrid initialized with API key');
+} else {
+  console.error('WARNING: SendGrid API key not found - emails will not be sent');
 }
 
 // Helper function to format form data into readable email content
@@ -511,6 +514,11 @@ export async function POST(request: NextRequest) {
     `;
 
     // Determine recipients
+    console.log('=== EMAIL CONFIGURATION CHECK ===');
+    console.log('SendGrid API Key exists:', !!process.env.SENDGRID_API_KEY);
+    console.log('SendGrid From Email:', process.env.SENDGRID_FROM_EMAIL);
+    console.log('Notification Emails env var:', process.env.NOTIFICATION_EMAILS);
+    
     const notificationEmails = process.env.NOTIFICATION_EMAILS || '';
     const recipients = notificationEmails.split(',').map(email => email.trim()).filter(Boolean);
     
@@ -534,8 +542,8 @@ export async function POST(request: NextRequest) {
       recipients.push(process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com');
     }
     
-    console.log('Email recipients:', recipients);
-    console.log('SendGrid configured:', !!process.env.SENDGRID_API_KEY, 'From email:', process.env.SENDGRID_FROM_EMAIL);
+    console.log('Final email recipients list:', recipients);
+    console.log('Number of recipients:', recipients.length);
 
     // Send email to internal team
     const msg = {
