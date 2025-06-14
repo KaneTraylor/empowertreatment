@@ -5,8 +5,8 @@ export interface FormData {
   // Contact Information
   email: string;
   mobileNumber: string;
-  fname: string;
-  lname: string;
+  firstName: string;
+  lastName: string;
   
   // Referral Information
   offer: 'yes' | 'no' | '';

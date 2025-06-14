@@ -26,8 +26,8 @@ export interface FormSubmission {
   created_at?: string;
   
   // Contact Information
-  fname: string;
-  lname: string;
+  first_name: string;
+  last_name: string;
   email: string;
   mobile_number: string;
   state: string;

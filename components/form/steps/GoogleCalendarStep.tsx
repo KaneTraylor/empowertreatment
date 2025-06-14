@@ -28,8 +28,8 @@ export function GoogleCalendarStep({ data, updateData, onNext, onBack, isFirstSt
   // Prefill the appointment URL with user's name and email if available
   const getAppointmentUrl = () => {
     const params = new URLSearchParams();
-    if (data.fname && data.lname) {
-      params.append('name', `${data.fname} ${data.lname}`);
+    if (data.firstName && data.lastName) {
+      params.append('name', `${data.firstName} ${data.lastName}`);
     }
     if (data.email) {
       params.append('email', data.email);

@@ -13,7 +13,7 @@ if (process.env.SENDGRID_API_KEY) {
 function formatFormData(data: FormData): string {
   const sections = [
     '=== CONTACT INFORMATION ===',
-    `Name: ${data.fname || 'Not provided'} ${data.lname || 'Not provided'}`,
+    `Name: ${data.firstName || 'Not provided'} ${data.lastName || 'Not provided'}`,
     `Email: ${data.email || 'Not provided'}`,
     `Phone: ${data.mobileNumber || 'Not provided'}`,
     `State: ${data.stateselect || 'Not provided'}`,
@@ -138,8 +138,8 @@ export async function POST(request: NextRequest) {
       // Transform FormData to match database schema
       const dbData: Omit<FormSubmission, 'id' | 'created_at'> = {
         // Contact Information
-        fname: data.fname || '',
-        lname: data.lname || '',
+        first_name: data.firstName || '',
+        last_name: data.lastName || '',
         email: data.email || '',
         mobile_number: data.mobileNumber || '',
         state: data.stateselect || '',
@@ -244,7 +244,7 @@ export async function POST(request: NextRequest) {
                             <tr>
                               <td width="50%">
                                 <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">PATIENT NAME</p>
-                                <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${data.fname || 'Not provided'} ${data.lname || 'Not provided'}</p>
+                                <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${data.firstName || 'Not provided'} ${data.lastName || 'Not provided'}</p>
                               </td>
                               <td width="50%" align="right">
                                 <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">SUBMISSION ID</p>
@@ -532,7 +532,7 @@ export async function POST(request: NextRequest) {
     const msg = {
       to: recipients,
       from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
-      subject: `New Patient Application - ${data.fname} ${data.lname}`,
+      subject: `New Patient Application - ${data.firstName} ${data.lastName}`,
       text: emailContent,
       html: htmlContent,
     };
@@ -559,7 +559,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            patientName: `${data.fname} ${data.lname}`,
+            patientName: `${data.firstName} ${data.lastName}`,
             patientPhone: data.mobileNumber,
             appointmentDateTime: data.appointmentDateTime,
             isInitialNotification: true
@@ -586,7 +586,7 @@ export async function POST(request: NextRequest) {
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #2563eb;">Thank You for Your Application</h2>
-            <p>Dear ${data.fname},</p>
+            <p>Dear ${data.firstName},</p>
             <p>We've received your application for Empower Treatment. Thank you for taking this important step in your recovery journey.</p>
             ${data.appointmentDateTime 
               ? `<div style="background: #10b981; color: white; padding: 15px; border-radius: 8px; margin: 20px 0;">

@@ -236,7 +236,7 @@ export default function AdminPage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {submission.data.fname} {submission.data.lname}
+                      {submission.data.firstName || submission.data.fname} {submission.data.lastName || submission.data.lname}
                     </h3>
                     <p className="text-sm text-gray-600">
                       Submitted: {new Date(submission.created_at).toLocaleString()}

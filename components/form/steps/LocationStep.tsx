@@ -91,6 +91,16 @@ export function LocationStep({ data, updateData, onNext }: StepProps) {
     }
     
     if (showPhoneSection) {
+      // Validate first name
+      if (!data.firstName || data.firstName.trim() === '') {
+        newErrors.firstName = 'First name is required';
+      }
+      
+      // Validate last name
+      if (!data.lastName || data.lastName.trim() === '') {
+        newErrors.lastName = 'Last name is required';
+      }
+      
       // Check if at least one contact method is provided
       const hasEmail = data.email && data.email.trim() !== '';
       const hasPhone = data.mobileNumber && data.mobileNumber.replace(/[^\d]/g, '').length > 0;
@@ -160,7 +170,7 @@ export function LocationStep({ data, updateData, onNext }: StepProps) {
             </h2>
             {data.stateselect === 'Ohio' && (
               <p className="text-gray-600 mb-6">
-                Next, we need a way to contact you. Please provide either your email or phone number (or both).
+                Next, we need your name and a way to contact you. Please provide either your email or phone number (or both).
                 Don&apos;t have your own phone number? Email{' '}
                 <a href="mailto:support@empower.com" className="text-primary hover:underline">
                   support@empower.com
@@ -173,6 +183,34 @@ export function LocationStep({ data, updateData, onNext }: StepProps) {
             {errors.contact && (
               <p className="text-sm text-red-600">{errors.contact}</p>
             )}
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  First name
+                </label>
+                <Input
+                  type="text"
+                  value={data.firstName || ''}
+                  onChange={(e) => updateData({ firstName: e.target.value })}
+                  placeholder="John"
+                  error={errors.firstName}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Last name
+                </label>
+                <Input
+                  type="text"
+                  value={data.lastName || ''}
+                  onChange={(e) => updateData({ lastName: e.target.value })}
+                  placeholder="Doe"
+                  error={errors.lastName}
+                />
+              </div>
+            </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

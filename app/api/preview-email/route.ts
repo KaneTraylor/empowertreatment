@@ -43,8 +43,8 @@ function formatFrequency(value: string | undefined): string {
 export async function GET(request: NextRequest) {
   // Sample data for preview
   const sampleData: FormData = {
-    fname: 'John',
-    lname: 'Doe',
+    firstName: 'John',
+    lastName: 'Doe',
     email: 'john.doe@example.com',
     mobileNumber: '+1 (555) 123-4567',
     stateselect: 'California',
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
                           <tr>
                             <td width="50%">
                               <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">PATIENT NAME</p>
-                              <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${sampleData.fname || 'Not provided'} ${sampleData.lname || 'Not provided'}</p>
+                              <p style="margin: 4px 0 0 0; color: #1f2937; font-size: 18px; font-weight: 500;">${sampleData.firstName || 'Not provided'} ${sampleData.lastName || 'Not provided'}</p>
                             </td>
                             <td width="50%" align="right">
                               <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">SUBMISSION ID</p>

@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            patientName: `${appointment.fname} ${appointment.lname}`,
+            patientName: `${appointment.first_name} ${appointment.last_name}`,
             patientPhone: appointment.mobile_number,
             appointmentDateTime: appointment.appointment_date_time,
             isInitialNotification: false // This is a reminder, not initial notification
@@ -62,12 +62,12 @@ export async function GET(request: NextRequest) {
 
         if (response.ok) {
           remindersSent.push({
-            patientName: `${appointment.fname} ${appointment.lname}`,
+            patientName: `${appointment.first_name} ${appointment.last_name}`,
             appointmentTime: appointment.appointment_date_time
           });
         }
       } catch (error) {
-        console.error(`Failed to send reminder for ${appointment.fname} ${appointment.lname}:`, error);
+        console.error(`Failed to send reminder for ${appointment.first_name} ${appointment.last_name}:`, error);
       }
     }
 

@@ -13,8 +13,8 @@ export function GoogleCalendarExternalStep({ data, updateData, onNext, onBack, i
   const handleScheduleClick = () => {
     // Prefill the appointment URL with user's data
     const params = new URLSearchParams();
-    if (data.fname && data.lname) {
-      params.append('name', `${data.fname} ${data.lname}`);
+    if (data.firstName && data.lastName) {
+      params.append('name', `${data.firstName} ${data.lastName}`);
     }
     if (data.email) {
       params.append('email', data.email);
