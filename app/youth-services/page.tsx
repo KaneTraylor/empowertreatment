@@ -85,6 +85,77 @@ export default function YouthServices() {
         </motion.div>
       </section>
 
+      {/* Marquee Section */}
+      <section className="relative py-20 md:py-32 bg-gradient-to-b from-[#faf8f5] to-white overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* Top marquee */}
+          <div className="transform rotate-3">
+            <div className="flex animate-marquee whitespace-nowrap">
+              <div className="flex items-center">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-[#ef3d3d] hover:text-[#ef3d3d] transition-all duration-300 cursor-default marquee-text">
+                  You are not alone
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-[#ef3d3d] hover:text-[#ef3d3d] transition-all duration-300 cursor-default marquee-text">
+                  You are not alone
+                </span>
+              </div>
+              <div className="flex items-center" aria-hidden="true">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-[#ef3d3d] hover:text-[#ef3d3d] transition-all duration-300 cursor-default marquee-text">
+                  You are not alone
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-[#ef3d3d] hover:text-[#ef3d3d] transition-all duration-300 cursor-default marquee-text">
+                  You are not alone
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Middle marquee - opposite direction */}
+          <div className="transform -rotate-2 absolute">
+            <div className="flex animate-marquee-reverse whitespace-nowrap">
+              <div className="flex items-center">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-orange-400 hover:text-orange-400 transition-all duration-300 cursor-default marquee-text">
+                  Help is here
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-orange-400 hover:text-orange-400 transition-all duration-300 cursor-default marquee-text">
+                  Help is here
+                </span>
+              </div>
+              <div className="flex items-center" aria-hidden="true">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-orange-400 hover:text-orange-400 transition-all duration-300 cursor-default marquee-text">
+                  Help is here
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-orange-400 hover:text-orange-400 transition-all duration-300 cursor-default marquee-text">
+                  Help is here
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom marquee */}
+          <div className="transform rotate-1 absolute bottom-0">
+            <div className="flex animate-marquee whitespace-nowrap">
+              <div className="flex items-center">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-pink-400 hover:text-pink-400 transition-all duration-300 cursor-default marquee-text">
+                  Your feelings matter
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-pink-400 hover:text-pink-400 transition-all duration-300 cursor-default marquee-text">
+                  Your feelings matter
+                </span>
+              </div>
+              <div className="flex items-center" aria-hidden="true">
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-pink-400 hover:text-pink-400 transition-all duration-300 cursor-default marquee-text">
+                  Your feelings matter
+                </span>
+                <span className="text-6xl md:text-7xl lg:text-8xl font-bold uppercase mx-8 text-transparent stroke-2 stroke-pink-400 hover:text-pink-400 transition-all duration-300 cursor-default marquee-text">
+                  Your feelings matter
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Why Teens Choose Empower Section */}
       <section className="relative py-10 md:py-12 overflow-hidden">
         {/* Video Background */}
