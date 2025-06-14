@@ -35,6 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/book-appointment`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/welcome`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
