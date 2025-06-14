@@ -6,7 +6,7 @@ Add these to your `.env.local` file:
 
 ```env
 # Google Analytics 4
-NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-0DG696NZZ8
 
 # Google Search Console Verification (optional)
 # Update the verification code in app/layout.tsx metadata
