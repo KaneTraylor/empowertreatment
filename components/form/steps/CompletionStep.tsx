@@ -116,15 +116,15 @@ export function CompletionStep({ data, onBack, isFirstStep }: StepProps) {
             transition={{ delay: 0.2 }}
           >
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              🎉 You&apos;re all set!
+              🎉 You're all set!
             </h1>
             <p className="text-gray-600 mb-4">
               Thank you for taking the time to complete this assessment.
             </p>
             <p className="text-gray-600">
               {data.interestedintreatment === 'asap' 
-                ? "Since you&apos;re interested in starting as soon as possible, we&apos;ll prioritize reaching out to you within the next 24 hours."
-                : "We&apos;ll be in touch within the next few days to schedule your welcome call."
+                ? "Since you're interested in starting as soon as possible, we'll prioritize reaching out to you within the next 24 hours."
+                : "We'll be in touch within the next few days to schedule your welcome call."
               }
             </p>
           </motion.div>
@@ -155,7 +155,7 @@ export function CompletionStep({ data, onBack, isFirstStep }: StepProps) {
                 <span className="mr-2">•</span>
                 <span>
                   {data.appointmentDateTime 
-                    ? `We&apos;ll call you at your scheduled time: ${data.appointmentDateTime}`
+                    ? `We'll call you at your scheduled time: ${data.appointmentDateTime}`
                     : "A member of our care team will call you at the number you provided"
                   }
                 </span>
@@ -166,7 +166,7 @@ export function CompletionStep({ data, onBack, isFirstStep }: StepProps) {
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>During the call, we&apos;ll discuss your treatment goals and next steps</span>
+                <span>During the call, we'll discuss your treatment goals and next steps</span>
               </li>
             </ul>
           </motion.div>
