@@ -256,7 +256,7 @@ export function MultiStepForm() {
       )}
       
       <motion.div 
-        className="bg-white md:rounded-lg md:shadow-lg p-6 md:p-10 lg:p-12"
+        className="bg-white md:rounded-lg md:shadow-lg p-4 sm:p-6 md:p-10 lg:p-12 min-h-screen md:min-h-0"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}

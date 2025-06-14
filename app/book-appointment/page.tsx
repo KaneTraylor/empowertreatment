@@ -16,7 +16,8 @@ const clinicians = [
     specialties: ['Medication Management', 'Mental Health Assessment', 'Psychiatric Evaluation'],
     bio: 'Specializes in medication management and comprehensive mental health treatment.',
     image: '/clinicians/sara.jpg', // You'll add this
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0jrg-D9avjhLEjQrGEp5Uc5YXk98oJHlj0_hpmNOH65UZmJQrgQ0hOsmwYyHitcm_0C8q9Kji3'
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0jrg-D9avjhLEjQrGEp5Uc5YXk98oJHlj0_hpmNOH65UZmJQrgQ0hOsmwYyHitcm_0C8q9Kji3',
+    phone: process.env.NEXT_PUBLIC_SARA_PHONE || '220-215-0580'
   },
   {
     id: 'kelsey',
@@ -25,7 +26,8 @@ const clinicians = [
     specialties: ['Substance Use Counseling', 'Individual Therapy', 'Recovery Support'],
     bio: 'Licensed Chemical Dependency Counselor specializing in addiction recovery.',
     image: '/clinicians/kelsey.jpg', // You'll add this
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Kqy_5aHsCOvckFOVAwHN6q1aa_DiMI_HesQ_sXZYMHfTihmjP3OeC1_Ddqb080io2s0Gq86in'
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Kqy_5aHsCOvckFOVAwHN6q1aa_DiMI_HesQ_sXZYMHfTihmjP3OeC1_Ddqb080io2s0Gq86in',
+    phone: process.env.NEXT_PUBLIC_KELSEY_PHONE || '513-400-3475'
   },
   {
     id: 'alex',
@@ -34,7 +36,38 @@ const clinicians = [
     specialties: ['Chemical Dependency Counseling', 'Group Therapy', 'Peer Support'],
     bio: 'Certified Chemical Dependency Counselor Assistant focused on group therapy and peer support.',
     image: '/clinicians/alex.jpg', // You'll add this
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1Pte65Q0yMwEr3DYPV6lkSZ6lgA2gQKtW-OE8EheavEQVY-gCE0_T_LhvIqfH1qvm3fwxFFvyQ'
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1Pte65Q0yMwEr3DYPV6lkSZ6lgA2gQKtW-OE8EheavEQVY-gCE0_T_LhvIqfH1qvm3fwxFFvyQ',
+    phone: process.env.NEXT_PUBLIC_ALEX_PHONE || '740-237-3637'
+  },
+  {
+    id: 'carol',
+    name: 'Carol',
+    title: 'CDCA',
+    specialties: ['Chemical Dependency Counseling', 'Individual Therapy', 'Recovery Support'],
+    bio: 'Certified Chemical Dependency Counselor Assistant providing compassionate support for addiction recovery.',
+    image: '/clinicians/carol.jpg', // You'll add this
+    calendarUrl: 'https://calendar.app.google/GkbaoVGm9R6t37GJA',
+    phone: process.env.NEXT_PUBLIC_CAROL_PHONE || '740-202-9956'
+  },
+  {
+    id: 'kalee',
+    name: 'Kalee',
+    title: 'CDCA',
+    specialties: ['Chemical Dependency Counseling', 'Individual Therapy', 'Recovery Support'],
+    bio: 'Certified Chemical Dependency Counselor Assistant dedicated to helping individuals on their recovery journey.',
+    image: '/clinicians/kalee.jpg', // You'll add this
+    calendarUrl: '', // To be added when calendar link is created
+    phone: process.env.NEXT_PUBLIC_KALEE_PHONE || '740-200-0076'
+  },
+  {
+    id: 'nycole',
+    name: 'Nycole',
+    title: 'CDCA',
+    specialties: ['Chemical Dependency Counseling', 'Individual Therapy', 'Crisis Support'],
+    bio: 'Certified Chemical Dependency Counselor Assistant specializing in addiction recovery and crisis intervention.',
+    image: '/clinicians/nycole.jpg', // You'll add this
+    calendarUrl: '', // To be added when calendar link is created
+    phone: process.env.NEXT_PUBLIC_NYCOLE_PHONE || '740-200-0829'
   }
 ];
 
@@ -60,8 +93,8 @@ export default function BookAppointment() {
   // Need-based routing logic
   const needsMapping = {
     'medication': ['sara'],
-    'substance-use': ['kelsey', 'alex'],
-    'mental-health': ['sara', 'kelsey'],
+    'substance-use': ['kelsey', 'alex', 'carol', 'kalee', 'nycole'],
+    'mental-health': ['sara', 'kelsey', 'carol', 'kalee', 'nycole'],
     'group-therapy': ['alex'],
     'assessment': ['assessment']
   };
@@ -456,26 +489,70 @@ export default function BookAppointment() {
                       </ul>
                     </div>
 
-                    <Button
-                      size="lg"
-                      onClick={() => setShowCalendar(true)}
-                      className="min-w-[200px]"
-                    >
-                      View Available Times
-                    </Button>
+                    {selectedClinician.calendarUrl ? (
+                      <Button
+                        size="lg"
+                        onClick={() => setShowCalendar(true)}
+                        className="min-w-[200px]"
+                      >
+                        View Available Times
+                      </Button>
+                    ) : (
+                      <div className="text-center">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                          <h3 className="font-semibold text-yellow-900 mb-2">Online Booking Coming Soon</h3>
+                          <p className="text-sm text-yellow-800 mb-4">
+                            {selectedClinician.name}&apos;s online calendar is being set up. 
+                            Please call to schedule an appointment.
+                          </p>
+                          <a 
+                            href={`tel:${selectedClinician.phone || '740-200-0277'}`}
+                            className="inline-flex items-center justify-center bg-yellow-600 text-white rounded-full px-6 py-3 font-medium hover:bg-yellow-700 transition-colors"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Call {selectedClinician.phone || '(740) 200-0277'}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div>
-                    <div className="bg-gray-100 rounded-lg p-4 mb-4">
-                      <p className="text-sm text-gray-600 text-center">
-                        You&apos;ll be redirected to our secure scheduling system
-                      </p>
-                    </div>
-                    <iframe
-                      src={selectedClinician.calendarUrl}
-                      className="w-full h-[600px] rounded-lg border-2 border-gray-200"
-                      frameBorder="0"
-                    />
+                    {selectedClinician.calendarUrl ? (
+                      <>
+                        <div className="bg-gray-100 rounded-lg p-4 mb-4">
+                          <p className="text-sm text-gray-600 text-center">
+                            You&apos;ll be redirected to our secure scheduling system
+                          </p>
+                        </div>
+                        <iframe
+                          src={selectedClinician.calendarUrl}
+                          className="w-full h-[600px] rounded-lg border-2 border-gray-200"
+                          frameBorder="0"
+                        />
+                      </>
+                    ) : (
+                      <div className="text-center">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                          <h3 className="font-semibold text-yellow-900 mb-2">Please Call to Schedule</h3>
+                          <p className="text-sm text-yellow-800 mb-4">
+                            {selectedClinician.name}&apos;s online booking is being set up. 
+                            Please call to schedule your appointment.
+                          </p>
+                          <a 
+                            href={`tel:${selectedClinician.phone || '740-200-0277'}`}
+                            className="inline-flex items-center justify-center bg-yellow-600 text-white rounded-full px-6 py-3 font-medium hover:bg-yellow-700 transition-colors"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Call {selectedClinician.phone || '(740) 200-0277'}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>
