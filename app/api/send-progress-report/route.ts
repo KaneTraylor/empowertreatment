@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     // Prepare email
     const msg = {
       to: recipientEmail,
-      from: 'hello@empowertreatment.com',
+      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@empowertreatment.com',
       subject: `Progress Report - ${patientName} - ${new Date(reportDate).toLocaleDateString('en-US', { 
         year: 'numeric', 
         month: 'long', 
@@ -120,17 +120,28 @@ export async function POST(request: NextRequest) {
         }
       ]
     };
+    
+    // Add logging before sending
+    console.log('Attempting to send email:', {
+      to: msg.to,
+      from: msg.from,
+      subject: msg.subject,
+      attachmentSize: pdfBase64.length,
+      hasSendGridKey: !!process.env.SENDGRID_API_KEY
+    });
 
     // Check if SendGrid is configured
-    if (!process.env.SENDGRID_API_KEY) {
-      console.log('Email that would be sent:', {
-        to: msg.to,
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+      console.log('Email configuration missing:', {
+        hasSendGridKey: !!process.env.SENDGRID_API_KEY,
+        hasSendGridFromEmail: !!process.env.SENDGRID_FROM_EMAIL,
+        wouldSendTo: msg.to,
         subject: msg.subject,
         attachmentSize: pdfBase64.length
       });
       return NextResponse.json({
         success: false,
-        message: 'Email service not configured. Please contact administrator.'
+        message: 'Email service not configured. Please add SENDGRID_API_KEY and SENDGRID_FROM_EMAIL to environment variables.'
       }, { status: 503 });
     }
 
@@ -144,11 +155,24 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error sending progress report email:', error);
+    
+    // More detailed error logging for SendGrid errors
+    if (error && typeof error === 'object' && 'response' in error) {
+      const sgError = error as any;
+      console.error('SendGrid Error Response:', {
+        statusCode: sgError.code,
+        message: sgError.message,
+        response: sgError.response?.body,
+        headers: sgError.response?.headers
+      });
+    }
+    
     return NextResponse.json(
       { 
         success: false, 
         message: 'Failed to send progress report email',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: process.env.NODE_ENV === 'development' ? error : undefined
       },
       { status: 500 }
     );

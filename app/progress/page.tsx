@@ -492,7 +492,7 @@ export default function ProgressPage() {
                           )}
                         </button>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">Report will be sent from hello@empowertreatment.com</p>
+                      <p className="text-xs text-gray-600 mt-1">Report will be sent from noreply@empowertreatment.com</p>
                     </div>
                   </div>
                   
