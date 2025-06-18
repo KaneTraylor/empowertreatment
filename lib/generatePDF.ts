@@ -11,6 +11,7 @@ interface ProgressReportData {
   contactEmail: string;
   contactPhone: string;
   reportContent: string;
+  reportDate?: string;
 }
 
 export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
@@ -77,7 +78,8 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
 
   // Add report date
   doc.setFontSize(10);
-  doc.text(`Report Date: ${new Date().toLocaleDateString('en-US', { 
+  const reportDate = data.reportDate ? new Date(data.reportDate) : new Date();
+  doc.text(`Report Date: ${reportDate.toLocaleDateString('en-US', { 
     year: 'numeric', 
     month: 'long', 
     day: 'numeric' 
@@ -116,7 +118,7 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   doc.setFont('helvetica', 'bold');
   doc.text('Report Date:', margin + 5, yPosition + 5);
   doc.setFont('helvetica', 'normal');
-  doc.text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin + 35, yPosition + 5);
+  doc.text(reportDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin + 35, yPosition + 5);
   
   doc.setFont('helvetica', 'bold');
   doc.text('Services:', pageWidth / 2 + 5, yPosition + 5);

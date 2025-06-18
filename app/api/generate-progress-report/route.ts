@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
       workingOn,
       numberOfServices,
       contactEmail,
-      contactPhone
+      contactPhone,
+      reportDate
     } = data;
 
     // Validate required fields
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest) {
     Provider Name: ${providerName}
     Provider Credentials: ${providerCredentials || 'Not specified'}
     Patient Name: ${patientName}
+    Report Date: ${reportDate ? new Date(reportDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
     Treatment Goals: ${patientGoals}
     Services/Activities Worked On: ${workingOn}
     Number of Services Provided: ${numberOfServices}
@@ -105,7 +107,7 @@ ${providerName}${providerCredentials ? `, ${providerCredentials}` : ''}
 Email: ${contactEmail}
 Phone: ${contactPhone}
 
-Report Generated: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} EST`;
+Report Date: ${reportDate ? new Date(reportDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
 
     return NextResponse.json({ 
       success: true, 

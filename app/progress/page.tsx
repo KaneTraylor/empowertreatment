@@ -14,6 +14,7 @@ interface ProgressReportForm {
   numberOfServices: string;
   contactEmail: string;
   contactPhone: string;
+  reportDate: string;
 }
 
 export default function ProgressPage() {
@@ -25,12 +26,18 @@ export default function ProgressPage() {
     workingOn: '',
     numberOfServices: '',
     contactEmail: '',
-    contactPhone: ''
+    contactPhone: '',
+    reportDate: new Date().toISOString().split('T')[0]
   });
   
   const [generatedReport, setGeneratedReport] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [recipientEmail, setRecipientEmail] = useState<string>('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedReport, setEditedReport] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -62,6 +69,8 @@ export default function ProgressPage() {
       }
 
       setGeneratedReport(data.report);
+      setEditedReport(data.report);
+      setIsEditMode(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -70,23 +79,64 @@ export default function ProgressPage() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedReport);
+    navigator.clipboard.writeText(editedReport);
     alert('Report copied to clipboard!');
   };
 
   const downloadPDF = () => {
-    if (!generatedReport) return;
+    if (!editedReport) return;
 
     const pdf = generateProgressReportPDF({
       ...formData,
-      reportContent: generatedReport
+      reportContent: editedReport,
+      reportDate: formData.reportDate
     });
 
     // Generate filename with patient name and date
-    const date = new Date().toISOString().split('T')[0];
+    const date = formData.reportDate || new Date().toISOString().split('T')[0];
     const filename = `progress-report-${formData.patientName.replace(/\s+/g, '-').toLowerCase()}-${date}.pdf`;
     
     pdf.save(filename);
+  };
+
+  const sendEmail = async () => {
+    if (!editedReport || !recipientEmail) return;
+
+    setIsSendingEmail(true);
+    setEmailStatus(null);
+
+    try {
+      const response = await fetch('/api/send-progress-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          recipientEmail,
+          reportContent: editedReport
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send email');
+      }
+
+      setEmailStatus({
+        type: 'success',
+        message: `Progress report sent successfully to ${recipientEmail}`
+      });
+      setRecipientEmail('');
+    } catch (err) {
+      setEmailStatus({
+        type: 'error',
+        message: err instanceof Error ? err.message : 'Failed to send email'
+      });
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
   return (
@@ -185,6 +235,23 @@ export default function ProgressPage() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   placeholder="John Doe"
                 />
+              </div>
+
+              {/* Report Date */}
+              <div>
+                <label htmlFor="reportDate" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Report Date
+                </label>
+                <input
+                  type="date"
+                  id="reportDate"
+                  name="reportDate"
+                  value={formData.reportDate}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                />
+                <p className="text-xs text-gray-500 mt-1">Select the date for this progress report</p>
               </div>
             </div>
 
@@ -384,19 +451,144 @@ export default function ProgressPage() {
                     </button>
                   </div>
                 </div>
+                
+                {/* Email Section */}
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <label htmlFor="recipientEmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Send Report via Email
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          id="recipientEmail"
+                          value={recipientEmail}
+                          onChange={(e) => setRecipientEmail(e.target.value)}
+                          placeholder="recipient@example.com"
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                          disabled={isSendingEmail}
+                        />
+                        <button
+                          onClick={sendEmail}
+                          disabled={!recipientEmail || isSendingEmail}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isSendingEmail ? (
+                            <>
+                              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              Email Report
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-1">Report will be sent from hello@empowertreatment.com</p>
+                    </div>
+                  </div>
+                  
+                  {/* Email Status Messages */}
+                  {emailStatus && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`mt-3 p-3 rounded-lg ${
+                        emailStatus.type === 'success' 
+                          ? 'bg-green-100 text-green-700 border border-green-200' 
+                          : 'bg-red-100 text-red-700 border border-red-200'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        {emailStatus.type === 'success' ? (
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {emailStatus.message}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               </div>
               
               <div className="bg-white border-2 border-gray-200 rounded-xl shadow-inner">
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                   <h3 className="font-semibold text-gray-700 flex items-center">
                     <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     Report Preview
                   </h3>
+                  <button
+                    onClick={() => setIsEditMode(!isEditMode)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    {isEditMode ? (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Preview Mode
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit Report
+                      </>
+                    )}
+                  </button>
                 </div>
-                <div className="p-6 whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
-                  {generatedReport}
+                <div className="p-6">
+                  {isEditMode ? (
+                    <div className="space-y-3">
+                      <textarea
+                        value={editedReport}
+                        onChange={(e) => setEditedReport(e.target.value)}
+                        className="w-full h-96 p-4 font-mono text-sm text-gray-800 leading-relaxed border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+                        placeholder="Edit your report here..."
+                      />
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600">
+                          {editedReport !== generatedReport ? (
+                            <span className="flex items-center text-amber-600">
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                              </svg>
+                              Report has been modified
+                            </span>
+                          ) : (
+                            <span className="text-gray-500">No changes made</span>
+                          )}
+                        </p>
+                        <button
+                          onClick={() => setEditedReport(generatedReport)}
+                          className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                          Reset to Original
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
+                      {editedReport}
+                    </div>
+                  )}
                 </div>
               </div>
 
