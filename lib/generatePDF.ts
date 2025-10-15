@@ -1,6 +1,10 @@
 import jsPDF from 'jspdf';
 import { logoBase64 } from './logoData';
 
+const HEADER_REWRITES: Record<string, string> = {
+  'CLINICAL OBSERVATIONS AND PATIENT RESPONSE TO TREATMENT': 'CLINICAL OBSERVATIONS & RESPONSE',
+};
+
 interface ProgressReportData {
   providerName: string;
   providerCredentials: string;
@@ -20,78 +24,93 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 25;
   const lineHeight = 8;
+  const FOOTER_HEIGHT = 54;
+  const FOOTER_GAP = 10;
+  const getSafeBottom = () => pageHeight - FOOTER_HEIGHT - 4;
   let yPosition = margin;
 
   // Helper function to add text with word wrap
   const addWrappedText = (text: string, fontSize: number = 10, maxWidth: number = pageWidth - 2 * margin) => {
     doc.setFontSize(fontSize);
-    const lines = doc.splitTextToSize(text, maxWidth);
-    lines.forEach((line: string) => {
-      if (yPosition + lineHeight > pageHeight - margin) {
+    const segments = text.split(/\n{2,}/);
+    segments.forEach((segment, index) => {
+      const trimmedSegment = segment.trim();
+
+      if (!trimmedSegment) {
+        yPosition += lineHeight;
+        return;
+      }
+
+      const lines = doc.splitTextToSize(trimmedSegment, maxWidth);
+      const blockHeight = lines.length * lineHeight;
+      const safeBottom = getSafeBottom();
+
+      if (yPosition + blockHeight > safeBottom) {
         doc.addPage();
-        yPosition = margin;
         addHeader();
       }
-      doc.text(line, margin, yPosition);
-      yPosition += lineHeight;
+
+      lines.forEach((line: string) => {
+        if (yPosition + lineHeight > safeBottom) {
+          doc.addPage();
+          addHeader();
+        }
+        doc.text(line, margin, yPosition);
+        yPosition += lineHeight;
+      });
+
+      if (index !== segments.length - 1) {
+        yPosition += lineHeight;
+      }
     });
   };
 
   // Helper function to add header on each page
   const addHeader = () => {
-    // Add logo with better positioning
     try {
-      // Logo dimensions and positioning
-      const logoWidth = 50;
-      const logoHeight = 25;
-      const logoY = margin - 10;
-      doc.addImage(logoBase64, 'PNG', margin, logoY, logoWidth, logoHeight);
+      const logoWidth = 36;
+      const logoHeight = 18;
+      const logoX = margin;
+      const logoY = margin - 6;
+      doc.addImage(logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
     } catch (e) {
       console.log('Logo could not be added:', e);
     }
-    
-    // Add header text with better spacing
-    doc.setFontSize(20);
+
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(239, 61, 61); // Primary color
-    doc.text('EMPOWER TREATMENT', pageWidth - margin, margin, { align: 'right' });
-    doc.setTextColor(0, 0, 0); // Back to black
+    doc.setFontSize(18);
+    doc.setTextColor(30, 41, 59);
+    doc.text('Empower Treatment', pageWidth - margin, margin + 4, { align: 'right' });
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(14);
-    doc.text('Clinical Progress Report', pageWidth - margin, margin + 10, { align: 'right' });
-    
-    // Add decorative line below header with more spacing
-    const lineY = margin + 20;
-    doc.setDrawColor(239, 61, 61); // Primary color
-    doc.setLineWidth(1.5);
-    doc.line(margin, lineY, pageWidth - margin, lineY);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(220, 220, 220);
-    doc.line(margin, lineY + 2, pageWidth - margin, lineY + 2);
-    doc.setDrawColor(0, 0, 0); // Back to black
+    doc.setFontSize(11);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Clinical Progress Report', pageWidth - margin, margin + 12, { align: 'right' });
+
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.6);
+    doc.line(margin, margin + 18, pageWidth - margin, margin + 18);
+    doc.setDrawColor(239, 68, 68);
+    doc.setLineWidth(1.2);
+    doc.line(margin, margin + 20, pageWidth - margin, margin + 20);
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(0.4);
+    doc.line(margin, margin + 24, pageWidth - margin, margin + 24);
+
+    doc.setDrawColor(0, 0, 0);
+    doc.setTextColor(0, 0, 0);
     doc.setLineWidth(0.2);
-    yPosition = lineY + 15;
+    yPosition = margin + 32;
   };
 
   // Add first page header
   addHeader();
 
-  // Add report date
-  doc.setFontSize(10);
-  const reportDate = data.reportDate ? new Date(data.reportDate) : new Date();
-  doc.text(`Report Date: ${reportDate.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })}`, pageWidth - margin, yPosition, { align: 'right' });
-  yPosition += lineHeight * 2;
-
   // Patient and Provider Information Box
-  doc.setFillColor(248, 248, 252);
-  doc.roundedRect(margin, yPosition - 5, pageWidth - 2 * margin, 40, 3, 3, 'F');
-  doc.setDrawColor(239, 61, 61);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(margin, yPosition - 5, pageWidth - 2 * margin, 40, 3, 3, 'S');
+  doc.setFillColor(247, 249, 252);
+  doc.roundedRect(margin, yPosition - 5, pageWidth - 2 * margin, 40, 4, 4, 'F');
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.6);
+  doc.roundedRect(margin, yPosition - 5, pageWidth - 2 * margin, 40, 4, 4, 'S');
   
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
@@ -111,80 +130,86 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   doc.setFont('helvetica', 'normal');
   const providerText = data.providerCredentials ? `${data.providerName}, ${data.providerCredentials}` : data.providerName;
   const providerLines = doc.splitTextToSize(providerText, 70);
-  doc.text(providerLines[0], pageWidth / 2 + 25, yPosition + 5);
+  if (providerLines.length > 1) {
+    providerLines.forEach((providerLine: string, index: number) => {
+      doc.text(providerLine, pageWidth / 2 + 25, yPosition + 5 + index * lineHeight);
+    });
+  } else {
+    doc.text(providerLines[0] ?? '', pageWidth / 2 + 25, yPosition + 5);
+  }
   
   yPosition += lineHeight + 2;
   
   doc.setFont('helvetica', 'bold');
-  doc.text('Report Date:', margin + 5, yPosition + 5);
-  doc.setFont('helvetica', 'normal');
-  doc.text(reportDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin + 35, yPosition + 5);
-  
-  doc.setFont('helvetica', 'bold');
-  doc.text('Services:', pageWidth / 2 + 5, yPosition + 5);
+  doc.text('Services:', margin + 5, yPosition + 5);
   doc.setFont('helvetica', 'normal');
   const servicesText = doc.splitTextToSize(data.numberOfServices, 70);
-  doc.text(servicesText[0], pageWidth / 2 + 25, yPosition + 5);
+  doc.text(servicesText[0], margin + 35, yPosition + 5);
   
   yPosition += lineHeight + 12;
 
   // Parse and format the report content
-  const reportSections = data.reportContent.split('\n\n');
+  const reportSections = data.reportContent.split(/\n{2,}/);
   
-  reportSections.forEach((section) => {
-    // Skip the provider contact section at the end (we handle it in footer)
-    if (section.includes('Provider Contact Information:')) {
+  reportSections.forEach((rawSection) => {
+    const section = rawSection.trim();
+
+    if (!section) {
       return;
     }
     
-    // Check if this is a header (usually in caps or starts with specific keywords)
-    const isHeader = section.match(/^[A-Z\s]+:/) || 
-                    section.includes('SUMMARY') || 
-                    section.includes('GOALS') || 
-                    section.includes('SERVICES') ||
-                    section.includes('OBSERVATIONS') ||
-                    section.includes('RECOMMENDATIONS') ||
-                    section.includes('NEXT STEPS') ||
-                    section.includes('PROGRESS') ||
-                    section.includes('TREATMENT');
-    
-    // Check if this is a signature line
-    const isSignature = section.includes('Prepared by:') || 
-                       section.includes('Submitted by:') ||
-                       section.includes('Signed:');
-    
-    if (isHeader) {
-      // Add extra space before headers
-      yPosition += lineHeight;
-      
-      // Check if we need a new page
-      if (yPosition + lineHeight * 3 > pageHeight - margin * 3) {
-        doc.addPage();
-        yPosition = margin;
-        addHeader();
+    if (/^---/.test(section) || /Provider Contact Information:/i.test(section)) {
+      return;
+    }
+
+    const lines = section.split('\n');
+    const headerLine = lines[0]?.trim() ?? '';
+    const remainingLines = lines.slice(1).join('\n').trim();
+
+    const signaturePattern = /^(Prepared by|Submitted by|Signed)/i;
+    const isSignature = signaturePattern.test(headerLine);
+
+    let headerTitle: string | null = null;
+    let bodyContent = remainingLines;
+
+    if (headerLine.includes(':')) {
+      const [titlePart, ...restParts] = headerLine.split(':');
+      const candidateTitle = titlePart.trim();
+      const trailing = restParts.join(':').trim();
+
+      if (candidateTitle.length > 0 && candidateTitle.length <= 70) {
+        headerTitle = candidateTitle;
+        if (trailing) {
+          bodyContent = trailing + (bodyContent ? `\n${bodyContent}` : '');
+        }
       }
-      
-      // Add styled section headers
-      doc.setFillColor(254, 242, 242); // Light red background
-      doc.roundedRect(margin - 2, yPosition - 5, pageWidth - 2 * margin + 4, lineHeight + 4, 2, 2, 'F');
-      doc.setDrawColor(239, 61, 61);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(margin - 2, yPosition - 5, pageWidth - 2 * margin + 4, lineHeight + 4, 2, 2, 'S');
-      
+    } else if (/^[A-Za-z][A-Za-z\s]+$/.test(headerLine) && headerLine.length <= 70) {
+      headerTitle = headerLine.trim();
+    }
+    
+    if (headerTitle) {
+      yPosition += lineHeight / 2;
+
+      if (yPosition + lineHeight * 2 > getSafeBottom()) {
+        doc.addPage();
+        addHeader();
+        yPosition += lineHeight;
+      }
+
+      const normalizedHeader = headerTitle.trim().toUpperCase();
+      const displayHeader = HEADER_REWRITES[normalizedHeader] ?? normalizedHeader;
+
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.setTextColor(185, 28, 28); // Dark red
-      const headerText = section.split('\n')[0].toUpperCase();
-      doc.text(headerText, margin + 2, yPosition);
+      doc.setFontSize(15);
+      doc.setTextColor(30, 41, 59);
+      doc.text(displayHeader, margin, yPosition);
       doc.setTextColor(0, 0, 0);
-      yPosition += lineHeight + 4;
+      yPosition += lineHeight + 2;
       
-      // Process the rest of the section content
-      const content = section.split('\n').slice(1).join('\n');
-      if (content.trim()) {
+      if (bodyContent) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
-        addWrappedText(content.trim());
+        addWrappedText(bodyContent);
       }
     } else if (isSignature) {
       // Special formatting for signature section
@@ -203,60 +228,54 @@ export function generateProgressReportPDF(data: ProgressReportData): jsPDF {
   });
 
   // Add professional footer
-  const footerY = pageHeight - margin * 2.8;
-  
-  // Footer background gradient effect
+  const footerTop = pageHeight - FOOTER_HEIGHT;
+
   doc.setFillColor(252, 252, 252);
-  doc.rect(0, footerY - 5, pageWidth, margin * 2.8 + 5, 'F');
-  
-  // Footer decorative lines
+  doc.rect(0, footerTop, pageWidth, FOOTER_HEIGHT, 'F');
+
   doc.setDrawColor(239, 61, 61);
   doc.setLineWidth(1);
-  doc.line(margin, footerY, margin + 30, footerY);
-  doc.setLineWidth(0.3);
-  doc.setDrawColor(220, 220, 220);
-  doc.line(margin + 35, footerY, pageWidth - margin, footerY);
-  
-  yPosition = footerY + lineHeight + 2;
-  
-  // Provider contact section
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(239, 61, 61);
-  doc.text('PROVIDER CONTACT', margin, yPosition);
-  doc.setTextColor(0, 0, 0);
-  yPosition += lineHeight;
-  
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  const footerProviderText = data.providerCredentials ? `${data.providerName}, ${data.providerCredentials}` : data.providerName;
-  doc.text(footerProviderText, margin, yPosition);
-  yPosition += lineHeight - 1;
-  doc.text(`${data.contactEmail} | ${data.contactPhone}`, margin, yPosition);
-  
-  // Confidentiality notice
+  doc.line(margin, footerTop + 6, margin + 32, footerTop + 6);
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.4);
+  doc.line(margin + 36, footerTop + 6, pageWidth - margin, footerTop + 6);
+
+  const confidentialityWidth = 84;
+  const confidentialityHeight = 20;
+  const confidentialityX = pageWidth - margin - confidentialityWidth;
+  const confidentialityY = footerTop + 10;
+
   doc.setFillColor(254, 252, 232);
   doc.setDrawColor(251, 191, 36);
   doc.setLineWidth(0.3);
-  doc.roundedRect(pageWidth / 2 - 50, footerY + 8, 100, 22, 2, 2, 'FD');
-  
+  doc.roundedRect(confidentialityX, confidentialityY, confidentialityWidth, confidentialityHeight, 3, 3, 'FD');
+
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
+  doc.setFontSize(9);
   doc.setTextColor(146, 64, 14);
-  doc.text('CONFIDENTIAL', pageWidth / 2, footerY + 16, { align: 'center' });
+  doc.text('CONFIDENTIAL', confidentialityX + confidentialityWidth / 2, confidentialityY + 9, { align: 'center' });
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  doc.text('For Clinical Use Only', pageWidth / 2, footerY + 23, { align: 'center' });
-  
-  // System credit
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
-  doc.text('Generated by Empower Treatment Progress Report System', pageWidth - margin, footerY + 25, { align: 'right' });
+  doc.setFontSize(8);
+  doc.text('For Clinical Use Only', confidentialityX + confidentialityWidth / 2, confidentialityY + 16, { align: 'center' });
+
+  let footerY = footerTop + 20;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(239, 61, 61);
+  doc.text('PROVIDER CONTACT', margin, footerY);
+  doc.setTextColor(0, 0, 0);
+  footerY += 12;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  const footerProviderText = data.providerCredentials ? `${data.providerName}, ${data.providerCredentials}` : data.providerName;
+  doc.text(footerProviderText, margin, footerY);
+  footerY += 10;
+  doc.text(`${data.contactEmail} | ${data.contactPhone}`, margin, footerY);
   
   // Page number (if needed in future)
   doc.setTextColor(100, 100, 100);
 
   return doc;
 }
-

@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const formatReport = (raw: string) => {
+  if (!raw) return "";
+
+  const normalizedLineEndings = raw.replace(/\r\n/g, "\n");
+  const withoutMarkdown = normalizedLineEndings
+    .replace(/\*\*\*(.+?)\*\*\*/g, "$1")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/^#+\s*/gm, "")
+    .replace(/`/g, "");
+
+  const normalizedBullets = withoutMarkdown.replace(/^\s*[-•]\s+/gm, "• ");
+  const trimmedSpacing = normalizedBullets
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .split("\n")
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .trim();
+
+  return trimmedSpacing;
+};
+
 export async function POST(request: NextRequest) {
   try {
     // Check for API key first
@@ -61,12 +84,12 @@ export async function POST(request: NextRequest) {
 
     // Create the prompt for Gemini
     const prompt = `
-    You are a professional healthcare documentation assistant. Generate a comprehensive progress report for a patient in substance abuse treatment based on the following information:
+You are a professional healthcare documentation assistant. Generate a comprehensive progress report for a patient in substance abuse treatment based on the following information.
 
-    Provider Name: ${providerName}
-    Provider Credentials: ${providerCredentials || "Not specified"}
-    Patient Name: ${patientName}
-    Report Date: ${
+Provider Name: ${providerName}
+Provider Credentials: ${providerCredentials || "Not specified"}
+Patient Name: ${patientName}
+Report Date: ${
       reportDate
         ? new Date(reportDate).toLocaleDateString("en-US", {
             year: "numeric",
@@ -79,28 +102,25 @@ export async function POST(request: NextRequest) {
             day: "numeric",
           })
     }
-    Treatment Goals: ${patientGoals}
-    Services/Activities Worked On: ${workingOn}
-    Number of Services Provided: ${numberOfServices}
-    
-    Please create a professional progress report that includes:
-    1. A header with the report date and patient/provider information
-    2. An executive summary of the patient's progress
-    3. Detailed progress on each treatment goal
-    4. Services provided and frequency
-    5. Clinical observations and patient response to treatment
-    6. Recommendations for continued care
-    7. Next steps and future treatment considerations
-    
-    The report should be:
-    - Professional and clinical in tone
-    - Specific and detailed
-    - Focused on measurable progress
-    - HIPAA-compliant (use only the information provided)
-    - Formatted for easy reading with clear sections
-    
-    Format the report in a standard clinical documentation style.
-    `;
+Treatment Goals: ${patientGoals}
+Services/Activities Worked On: ${workingOn}
+Number of Services Provided: ${numberOfServices}
+
+Please create a professional progress report that includes:
+1. A header with the report date and patient/provider information
+2. An executive summary of the patient's progress
+3. Detailed progress on each treatment goal
+4. Services provided and frequency
+5. Clinical observations and patient response to treatment
+6. Recommendations for continued care
+7. Next steps and future treatment considerations
+
+Formatting requirements:
+- Use plain text with section headers ending in a colon (e.g., Executive Summary:)
+- Do not use Markdown (no *, -, #, or underscores for emphasis or bullets)
+- Separate sections with a single blank line
+- Keep the tone clinical, specific, and HIPAA compliant
+`;
 
     // Generate the report with error handling
     let report;
@@ -122,27 +142,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Add footer with contact information
-    const fullReport = `${report}
+    const cleanedReport = formatReport(report);
+    const footerSection = [
+      "---",
+      "Provider Contact Information:",
+      `${providerName}${providerCredentials ? `, ${providerCredentials}` : ""}`,
+      `Email: ${contactEmail}`,
+      `Phone: ${contactPhone}`,
+      "",
+      `Report Date: ${
+        reportDate
+          ? new Date(reportDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+      }`,
+    ].join("\n");
 
----
-Provider Contact Information:
-${providerName}${providerCredentials ? `, ${providerCredentials}` : ""}
-Email: ${contactEmail}
-Phone: ${contactPhone}
-
-Report Date: ${
-      reportDate
-        ? new Date(reportDate).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        : new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-    }`;
+    const fullReport = cleanedReport
+      ? `${cleanedReport}\n\n${footerSection}`
+      : footerSection;
 
     return NextResponse.json({
       success: true,
