@@ -1,15 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: NextRequest) {
   try {
     // Check for API key first
     if (!process.env.GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY is not configured');
+      console.error("GEMINI_API_KEY is not configured");
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.' 
+        {
+          success: false,
+          message:
+            "Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.",
         },
         { status: 500 }
       );
@@ -23,9 +24,9 @@ export async function POST(request: NextRequest) {
     try {
       data = await request.json();
     } catch (parseError) {
-      console.error('Error parsing request body:', parseError);
+      console.error("Error parsing request body:", parseError);
       return NextResponse.json(
-        { success: false, message: 'Invalid request body' },
+        { success: false, message: "Invalid request body" },
         { status: 400 }
       );
     }
@@ -38,28 +39,46 @@ export async function POST(request: NextRequest) {
       numberOfServices,
       contactEmail,
       contactPhone,
-      reportDate
+      reportDate,
     } = data;
 
     // Validate required fields
-    if (!providerName || !patientName || !patientGoals || !workingOn || !numberOfServices) {
+    if (
+      !providerName ||
+      !patientName ||
+      !patientGoals ||
+      !workingOn ||
+      !numberOfServices
+    ) {
       return NextResponse.json(
-        { success: false, message: 'All fields are required' },
+        { success: false, message: "All fields are required" },
         { status: 400 }
       );
     }
 
     // Get the generative model (using the latest stable model)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Create the prompt for Gemini
     const prompt = `
     You are a professional healthcare documentation assistant. Generate a comprehensive progress report for a patient in substance abuse treatment based on the following information:
 
     Provider Name: ${providerName}
-    Provider Credentials: ${providerCredentials || 'Not specified'}
+    Provider Credentials: ${providerCredentials || "Not specified"}
     Patient Name: ${patientName}
-    Report Date: ${reportDate ? new Date(reportDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+    Report Date: ${
+      reportDate
+        ? new Date(reportDate).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+    }
     Treatment Goals: ${patientGoals}
     Services/Activities Worked On: ${workingOn}
     Number of Services Provided: ${numberOfServices}
@@ -89,13 +108,17 @@ export async function POST(request: NextRequest) {
       const result = await model.generateContent(prompt);
       const response = await result.response;
       report = response.text();
-      
+
       if (!report) {
-        throw new Error('Empty response from Gemini API');
+        throw new Error("Empty response from Gemini API");
       }
     } catch (geminiError) {
-      console.error('Gemini API error:', geminiError);
-      throw new Error(`Failed to generate content: ${geminiError instanceof Error ? geminiError.message : 'Unknown error'}`);
+      console.error("Gemini API error:", geminiError);
+      throw new Error(
+        `Failed to generate content: ${
+          geminiError instanceof Error ? geminiError.message : "Unknown error"
+        }`
+      );
     }
 
     // Add footer with contact information
@@ -103,35 +126,57 @@ export async function POST(request: NextRequest) {
 
 ---
 Provider Contact Information:
-${providerName}${providerCredentials ? `, ${providerCredentials}` : ''}
+${providerName}${providerCredentials ? `, ${providerCredentials}` : ""}
 Email: ${contactEmail}
 Phone: ${contactPhone}
 
-Report Date: ${reportDate ? new Date(reportDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+Report Date: ${
+      reportDate
+        ? new Date(reportDate).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+    }`;
 
-    return NextResponse.json({ 
-      success: true, 
-      report: fullReport 
+    return NextResponse.json({
+      success: true,
+      report: fullReport,
     });
-
   } catch (error) {
-    console.error('Error generating progress report:', error);
-    
+    console.error("Error generating progress report:", error);
+
     // Determine specific error type and message
-    let errorMessage = 'Failed to generate progress report. Please try again.';
+    let errorMessage = "Failed to generate progress report. Please try again.";
     let statusCode = 500;
-    
+
     if (error instanceof Error) {
       // Check for specific error types
-      if (error.message.includes('API_KEY') || error.message.includes('API key')) {
-        errorMessage = 'Gemini API key is invalid or not configured properly.';
-      } else if (error.message.includes('model')) {
-        errorMessage = 'Invalid Gemini model specified. Please check the model name.';
-      } else if (error.message.includes('quota') || error.message.includes('limit')) {
-        errorMessage = 'API quota exceeded. Please try again later.';
+      if (
+        error.message.includes("API_KEY") ||
+        error.message.includes("API key")
+      ) {
+        errorMessage = "Gemini API key is invalid or not configured properly.";
+      } else if (error.message.includes("model")) {
+        errorMessage =
+          "Invalid Gemini model specified. Please check the model name.";
+      } else if (
+        error.message.includes("quota") ||
+        error.message.includes("limit")
+      ) {
+        errorMessage = "API quota exceeded. Please try again later.";
         statusCode = 429;
-      } else if (error.message.includes('network') || error.message.includes('fetch')) {
-        errorMessage = 'Network error connecting to Gemini API. Please check your internet connection.';
+      } else if (
+        error.message.includes("network") ||
+        error.message.includes("fetch")
+      ) {
+        errorMessage =
+          "Network error connecting to Gemini API. Please check your internet connection.";
         statusCode = 503;
       } else {
         // Include the actual error message for debugging
@@ -140,9 +185,9 @@ Report Date: ${reportDate ? new Date(reportDate).toLocaleDateString('en-US', { y
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        message: errorMessage 
+      {
+        success: false,
+        message: errorMessage,
       },
       { status: statusCode }
     );

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import sgMail from '@sendgrid/mail';
 import { generateProgressReportPDF } from '@/lib/generatePDF';
 
-// Initialize SendGrid
+// Initialize SendGrid only if API key exists
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('SendGrid initialized with API key for progress reports');
 } else {
-  console.error('WARNING: SendGrid API key not found');
+  console.error('WARNING: SendGrid API key not found - emails will not be sent');
 }
 
 export async function POST(request: NextRequest) {
